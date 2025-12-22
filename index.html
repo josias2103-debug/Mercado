@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,43 +8,65 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        body { background-color: #f8f9fa; }
-        .card-resumen { background-color: #ffffff; border-left: 5px solid #0d6efd; }
-        .precio-bs { color: #6c757d; font-size: 0.9em; }
-        .nav-link.active { font-weight: bold; }
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card-resumen {
+            background-color: #ffffff;
+            border-left: 5px solid #0d6efd;
+        }
+
+        .precio-bs {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+        }
+
         /* Botón flotante para agregar */
         .fab {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 60px; height: 60px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
+
 <body>
 
-<div id="loginWall" class="position-fixed w-100 h-100 bg-white" style="z-index: 2000; top: 0; left: 0;">
-    <div class="container h-100 d-flex justify-content-center align-items-center">
-        <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
-            <div class="text-center mb-4">
-                <i class="bi bi-shield-lock-fill text-primary" style="font-size: 3rem;"></i>
-                <h3 class="mt-2">MarketPlanner OS</h3>
-                <p class="text-muted">Inicia sesión para continuar</p>
+    <div id="loginWall" class="position-fixed w-100 h-100 bg-white" style="z-index: 2000; top: 0; left: 0;">
+        <div class="container h-100 d-flex justify-content-center align-items-center">
+            <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+                <div class="text-center mb-4">
+                    <i class="bi bi-shield-lock-fill text-primary" style="font-size: 3rem;"></i>
+                    <h3 class="mt-2">MarketPlanner OS</h3>
+                    <p class="text-muted">Inicia sesión para continuar</p>
+                </div>
+                <form id="formLogin">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="loginEmail" class="form-control" required placeholder="tu@email.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="loginPass" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+                </form>
             </div>
-            <form id="formLogin">
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" required placeholder="tu@email.com">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" id="loginPass" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
-            </form>
         </div>
     </div>
-</div>
 
     <nav class="navbar navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
@@ -56,20 +79,23 @@
 
     <ul class="nav nav-tabs nav-justified bg-white shadow-sm" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒 Lista</button>
+            <button class="nav-link active" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒
+                Lista</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button">💰 Finanzas</button>
+            <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button">💰
+                Finanzas</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button">⚙️ Ajustes</button>
+            <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button">⚙️
+                Ajustes</button>
         </li>
     </ul>
 
     <div class="container mt-3 tab-content" id="myTabContent">
-        
+
         <div class="tab-pane fade show active" id="lista" role="tabpanel">
-            
+
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                 <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador">
@@ -104,7 +130,7 @@
         </div>
 
         <div class="tab-pane fade" id="finanzas" role="tabpanel">
-            
+
             <div class="card mb-3 shadow-sm">
                 <div class="card-header bg-light fw-bold">📉 Calculadora de Incidencia</div>
                 <div class="card-body">
@@ -128,7 +154,7 @@
             <div class="alert alert-info py-2">
                 <small>💰 Disponible: <strong id="dineroDisponible">$0.00</strong> (Ingresos - Deudas)</small>
             </div>
-            
+
             <ul class="list-group mb-5" id="listaFinanzas">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Tarjeta de Crédito
@@ -146,13 +172,16 @@
                 <h5><i class="bi bi-person-plus"></i> Registrar Usuario</h5>
                 <form id="formNuevoUsuario" class="row g-2">
                     <div class="col-6">
-                        <input type="text" id="regNombre" class="form-control form-control-sm" placeholder="Nombre" required>
+                        <input type="text" id="regNombre" class="form-control form-control-sm" placeholder="Nombre"
+                            required>
                     </div>
                     <div class="col-6">
-                        <input type="email" id="regEmail" class="form-control form-control-sm" placeholder="Email" required>
+                        <input type="email" id="regEmail" class="form-control form-control-sm" placeholder="Email"
+                            required>
                     </div>
                     <div class="col-6">
-                        <input type="password" id="regPass" class="form-control form-control-sm" placeholder="Contraseña" required>
+                        <input type="password" id="regPass" class="form-control form-control-sm"
+                            placeholder="Contraseña" required>
                     </div>
                     <div class="col-6">
                         <button type="submit" class="btn btn-success btn-sm w-100">Crear Usuario</button>
@@ -215,7 +244,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1J1hxN5wb6evXxenQTcfvZZ0htOz1z2_s4fnrk-L0nck84iCBXdMw5OCCMACTj0ec/exec"; // <--- ASEGÚRATE DE PEGARLA
         let currentUser = null;
@@ -230,7 +259,7 @@
             // Enviamos como texto plano para que Google no dispare el pre-flight (OPTIONS)
             const response = await fetch(url, {
                 method: 'POST',
-                mode: 'cors', 
+                mode: 'cors',
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
                 },
@@ -238,7 +267,7 @@
             });
 
             if (!response.ok) throw new Error("Error en la red");
-            
+
             return await response.json();
         }
 
@@ -247,7 +276,7 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            
+
             try {
                 const data = await llamarBackend('login', { email, password: pass });
                 if (data.success) {
@@ -268,19 +297,27 @@
             const data = await llamarBackend('getInitialData', { userId: currentUser.id });
             tasaBCV = data.tasa;
             document.getElementById('displayTasa').innerText = tasaBCV.toFixed(2);
-            
+
             renderizarProductos(data.products);
             renderizarFinanzas(data.finanzas);
         }
 
         // --- RENDERIZADO DE PRODUCTOS (CON BÚSQUEDA) ---
+        let productosCache = []; // Para filtrar localmente
+
         function renderizarProductos(productos) {
+            productosCache = productos;
             const contenedor = document.getElementById('contenedorProductos');
+            const termino = document.getElementById('buscador').value.toLowerCase();
+
             contenedor.innerHTML = "";
             let totalUSD = 0;
 
             productos.forEach(p => {
-                // p[0]=id, p[1]=nombre, p[2]=cantidad, p[3]=precio_usd, p[4]=mercado...
+                // p[1]=nombre, p[4]=mercado
+                const coincide = p[1].toLowerCase().includes(termino) || p[4].toLowerCase().includes(termino);
+                if (!coincide) return;
+
                 const subtotal = p[2] * p[3];
                 totalUSD += subtotal;
 
@@ -303,6 +340,54 @@
             document.getElementById('totalGeneralBS').innerText = `Bs ${(totalUSD * tasaBCV).toFixed(2)}`;
         }
 
+        // Evento de búsqueda
+        document.getElementById('buscador').addEventListener('input', () => renderizarProductos(productosCache));
+
+        // --- MANEJO DE FORMULARIO DE PRODUCTO ---
+        document.getElementById('formProducto').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = e.target.elements;
+
+            // Seguridad: Validación básica antes de enviar
+            const nombre = inputs[0].value.trim();
+            const precio = parseFloat(inputs[1].value);
+            const cantidad = parseInt(inputs[2].value);
+            const mercado = inputs[3].value.trim();
+
+            if (!nombre || isNaN(precio) || cantidad <= 0) {
+                alert("Por favor, completa los campos correctamente.");
+                return;
+            }
+
+            const payload = {
+                userId: currentUser.id,
+                nombre,
+                precio,
+                cantidad,
+                mercado
+            };
+
+            try {
+                // Alineación: 'saveProduct' coincide con el backend
+                const res = await llamarBackend('saveProduct', { payload });
+                if (res.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalNuevo')).hide();
+                    e.target.reset();
+                    cargarDatosIniciales();
+                } else {
+                    alert("Error servidor: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error crítico al guardar producto");
+            }
+        });
+
+        // Vincular botón guardar del modal
+        document.querySelector('#modalNuevo .btn-primary').addEventListener('click', () => {
+            document.getElementById('formProducto').requestSubmit();
+        });
+
         // --- CALCULADORA DE INCIDENCIA (TIEMPO REAL) ---
         const inputCosto = document.getElementById('costoInicial');
         const inputIncid = document.getElementById('porcentajeIncidencia');
@@ -320,7 +405,7 @@
             const lista = document.getElementById('listaFinanzas');
             const displayDisponible = document.getElementById('dineroDisponible');
             lista.innerHTML = "";
-            
+
             let totalIngresos = 0;
             let totalDeudas = 0;
 
@@ -331,7 +416,7 @@
                 const monto = parseFloat(f[2]);
                 const esIngreso = f[0].toLowerCase() === 'ingreso';
                 const fechaFormateada = f[3] ? new Date(f[3]).toLocaleDateString() : 'S/F';
-                
+
                 if (esIngreso) totalIngresos += monto;
                 else totalDeudas += monto;
 
@@ -364,7 +449,7 @@
             };
 
             const res = await llamarBackend('crearUsuario', { payload });
-            if(res.success) {
+            if (res.success) {
                 alert("Usuario creado con éxito");
                 e.target.reset();
                 cargarListaCompartir(); // Refrescar lista
@@ -373,24 +458,30 @@
 
         // --- CARGAR OTROS USUARIOS PARA COMPARTIR ---
         async function cargarListaCompartir() {
-            const data = await llamarBackend('getAllUsers'); // Necesitamos crear esta función en el Script
-            const contenedor = document.getElementById('listaUsuariosCompartir');
-            contenedor.innerHTML = "";
+            try {
+                const data = await llamarBackend('getAllUsers');
+                const contenedor = document.getElementById('listaUsuariosCompartir');
+                contenedor.innerHTML = "";
 
-            data.usuarios.forEach(u => {
-                if(u.id == currentUser.id) return; // No listarme a mí mismo
+                if (data.usuarios) {
+                    data.usuarios.forEach(u => {
+                        if (u.id == currentUser.id) return;
 
-                contenedor.innerHTML += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>${u.nombre}</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" 
-                                   onchange="actualizarPermiso(${u.id}, this.checked)"
-                                   ${u.tieneAcceso ? 'checked' : ''}>
-                        </div>
-                    </div>
-                `;
-            });
+                        contenedor.innerHTML += `
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>${u.nombre}</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" 
+                                           onchange="actualizarPermiso(${u.id}, this.checked)"
+                                           ${u.tieneAcceso ? 'checked' : ''}>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                console.warn("No se pudo cargar la lista de usuarios:", err);
+            }
         }
 
         async function actualizarPermiso(idInvitado, otorgar) {
@@ -399,7 +490,15 @@
                 accionPermiso: otorgar ? 'conceder' : 'revocar'
             });
             console.log(`Permiso ${otorgar ? 'concedido' : 'revocado'} para usuario ${idInvitado}`);
+        }
+
+        // Al cargar datos iniciales, también cargar lista de compartir
+        const originalCargarDatos = cargarDatosIniciales;
+        cargarDatosIniciales = async function () {
+            await originalCargarDatos();
+            cargarListaCompartir();
         };
     </script>
 </body>
+
 </html>
