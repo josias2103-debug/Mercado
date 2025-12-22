@@ -5,8 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarketPlanner OS</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(err => console.log("SW error", err));
+            });
+        }
+    </script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -71,8 +81,13 @@
     <nav class="navbar navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1"><i class="bi bi-cart4"></i> MarketPlanner</span>
-            <div class="text-white text-end">
-                <small>BCV: <span id="displayTasa">0.00</span> Bs</small>
+            <div class="d-flex align-items-center">
+                <button id="btnInstalar" class="btn btn-sm btn-outline-light me-2 d-none">
+                    <i class="bi bi-download"></i> Instalar App
+                </button>
+                <div class="text-white text-end">
+                    <small>BCV: <span id="displayTasa">0.00</span> Bs</small>
+                </div>
             </div>
         </div>
     </nav>
@@ -146,6 +161,43 @@
                     </div>
                     <div class="mt-2 p-2 bg-light border rounded text-center">
                         <strong>Costo Final: <span id="costoFinalCalc">$0.00</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3 shadow-sm border-primary">
+                <div class="card-header bg-primary text-white fw-bold">🔵 Asistente de Compra Cashea</div>
+                <div class="card-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-12">
+                            <label class="form-label">Monto Total de la Compra ($)</label>
+                            <input type="number" class="form-control" id="casheaMontoTotal" placeholder="0.00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Línea de Compra</label>
+                            <select class="form-select" id="casheaLinea" onchange="actualizarCuotasCashea()">
+                                <option value="cotidiana">Cotidiana (1 cuota)</option>
+                                <option value="principal" selected>Principal (Var. cuotas)</option>
+                            </select>
+                        </div>
+                        <div class="col-6" id="contenedorCuotasPrincipal">
+                            <label class="form-label">Nro. de Cuotas</label>
+                            <select class="form-select" id="casheaCuotas">
+                                <option value="3">3 Cuotas</option>
+                                <option value="6">6 Cuotas</option>
+                                <option value="9">9 Cuotas</option>
+                                <option value="12">12 Cuotas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="resultadoCashea" class="p-2 bg-light border rounded small d-none">
+                        <div class="d-flex justify-content-between"><span>Pago Inicial (40%):</span> <strong
+                                id="casheaInicial">$0.00</strong></div>
+                        <div class="d-flex justify-content-between"><span>Monto por Cuota:</span> <strong
+                                id="casheaMontoCuota">$0.00</strong></div>
+                        <hr class="my-1">
+                        <button class="btn btn-sm btn-outline-primary w-100 mt-1" onclick="registrarCashea()">Registrar
+                            Todo en Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -255,20 +307,22 @@
             const url = SCRIPT_URL;
             const data = { action: accion, ...payload };
 
-            // Usamos el método tradicional para evitar problemas de CORS con Apps Script
-            // Enviamos como texto plano para que Google no dispare el pre-flight (OPTIONS)
-            const response = await fetch(url, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8',
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) throw new Error("Error en la red");
-
-            return await response.json();
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(data)
+                });
+                if (!response.ok) throw new Error("Error en la red");
+                return await response.json();
+            } catch (err) {
+                console.warn("Error backend:", err);
+                if (!navigator.onLine) {
+                    alert("⚠️ Estás offline. Algunas funciones requieren internet.");
+                }
+                throw err;
+            }
         }
 
         // --- LÓGICA DE LOGIN ---
@@ -292,14 +346,51 @@
             }
         });
 
+        // --- SISTEMA DE NOTIFICACIONES ---
+        async function verificarNotificaciones(finanzas) {
+            if (!("Notification" in window)) return;
+
+            if (Notification.permission === "default") {
+                await Notification.requestPermission();
+            }
+
+            if (Notification.permission === "granted") {
+                const hoy = new Date();
+                // Buscar deudas que venzan en los próximos 3 días
+                const deudasProntas = finanzas.filter(f => {
+                    const fecha = new Date(f[3]);
+                    const difDias = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+                    return f[0].toLowerCase() === 'egreso' && difDias >= 0 && difDias <= 3;
+                });
+
+                if (deudasProntas.length > 0) {
+                    const nombresDeudas = deudasProntas.map(f => f[1]).join(", ");
+                    new Notification("MarketPlanner: Pagos Próximos", {
+                        body: `Vencen pronto: ${nombresDeudas}. Revisa tu flujo de caja.`,
+                        icon: 'app_icon_marketplanner_1766378047051.png'
+                    });
+                }
+            }
+        }
+
         // --- CARGAR DATOS (PRODUCTOS Y FINANZAS) ---
         async function cargarDatosIniciales() {
-            const data = await llamarBackend('getInitialData', { userId: currentUser.id });
-            tasaBCV = data.tasa;
-            document.getElementById('displayTasa').innerText = tasaBCV.toFixed(2);
+            try {
+                const data = await llamarBackend('getInitialData', { userId: currentUser.id });
+                if (!data.success) throw new Error(data.message);
 
-            renderizarProductos(data.products);
-            renderizarFinanzas(data.finanzas);
+                tasaBCV = data.tasa;
+                document.getElementById('displayTasa').innerText = tasaBCV.toFixed(2);
+
+                renderizarProductos(data.products);
+                renderizarFinanzas(data.finanzas);
+
+                // Nuevas funciones integradas
+                verificarNotificaciones(data.finanzas);
+                cargarListaCompartir();
+            } catch (err) {
+                console.error("Error al cargar datos:", err);
+            }
         }
 
         // --- RENDERIZADO DE PRODUCTOS (CON BÚSQUEDA) ---
@@ -331,6 +422,10 @@
                         <div class="text-end">
                             <span class="fw-bold text-primary">$${subtotal.toFixed(2)}</span><br>
                             <small class="precio-bs">Bs ${(subtotal * tasaBCV).toFixed(2)}</small>
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="prepararEdicion(${p[0]})"><i class="bi bi-pencil small"></i></button>
+                                <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="eliminarProducto(${p[0]})"><i class="bi bi-trash small"></i></button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -368,25 +463,175 @@
             };
 
             try {
-                // Alineación: 'saveProduct' coincide con el backend
-                const res = await llamarBackend('saveProduct', { payload });
+                const action = currentEditId ? 'updateProduct' : 'saveProduct';
+                const payloadFinal = currentEditId ? { id: currentEditId, payload } : { payload };
+
+                const res = await llamarBackend(action, { ...payloadFinal, userId: currentUser.id });
                 if (res.success) {
                     bootstrap.Modal.getInstance(document.getElementById('modalNuevo')).hide();
                     e.target.reset();
+                    currentEditId = null;
+                    document.querySelector('#modalNuevo .modal-title').innerText = "Nuevo Producto";
                     cargarDatosIniciales();
                 } else {
                     alert("Error servidor: " + res.message);
                 }
             } catch (err) {
                 console.error(err);
-                alert("Error crítico al guardar producto");
+                alert("Error crítico al procesar producto");
             }
         });
+
+        let currentEditId = null;
+
+        function prepararEdicion(id) {
+            const p = productosCache.find(prod => prod[0] == id);
+            if (!p) return;
+
+            currentEditId = id;
+            document.querySelector('#modalNuevo .modal-title').innerText = "Editar Producto";
+
+            const inputs = document.getElementById('formProducto').elements;
+            inputs[0].value = p[1]; // nombre
+            inputs[1].value = p[3]; // precio
+            inputs[2].value = p[2]; // cantidad
+            inputs[3].value = p[4]; // mercado
+
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalNuevo')).show();
+        }
+
+        async function eliminarProducto(id) {
+            if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
+            try {
+                const res = await llamarBackend('deleteProduct', { id, userId: currentUser.id });
+                if (res.success) {
+                    cargarDatosIniciales();
+                } else {
+                    alert("No se pudo eliminar: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- COMPARATIVA DE PRECIOS ---
+        document.querySelector('#formProducto input[type="text"]').addEventListener('blur', async (e) => {
+            const nombre = e.target.value.trim();
+            if (nombre.length < 3) return;
+
+            try {
+                const res = await llamarBackend('getPriceHistory', { nombreProducto: nombre });
+                if (res.success && res.history.length > 0) {
+                    mostrarComparativa(res.history);
+                }
+            } catch (err) {
+                console.warn("Error historial:", err);
+            }
+        });
+
+        function mostrarComparativa(historial) {
+            // Agrupar por mercado y quedarnos con el último precio
+            const mercados = {};
+            historial.forEach(h => {
+                mercados[h.mercado] = h.precio;
+            });
+
+            // Encontrar el precio más bajo
+            const precios = Object.values(mercados);
+            const minPrecio = Math.min(...precios);
+
+            let html = '<div class="mt-2 small border rounded p-2 bg-light"><strong><i class="bi bi-info-circle"></i> Comparativa de Mercados:</strong><br>';
+            for (const [mer, pre] of Object.entries(mercados)) {
+                const esMejor = pre === minPrecio;
+                html += `<div class="d-flex justify-content-between ${esMejor ? 'text-success fw-bold' : ''}">
+                            <span>${mer}:</span>
+                            <span>$${pre.toFixed(2)} ${esMejor ? '🚀' : ''}</span>
+                         </div>`;
+            }
+            if (precios.length > 1) {
+                html += `<div class="mt-1 text-muted text-center" style="font-size: 0.8em;">* Basado en tus compras anteriores</div>`;
+            }
+            html += '</div>';
+
+            const existing = document.getElementById('historialContenedor');
+            if (existing) existing.remove();
+
+            const div = document.createElement('div');
+            div.id = 'historialContenedor';
+            div.innerHTML = html;
+            document.getElementById('formProducto').appendChild(div);
+        }
 
         // Vincular botón guardar del modal
         document.querySelector('#modalNuevo .btn-primary').addEventListener('click', () => {
             document.getElementById('formProducto').requestSubmit();
         });
+
+        // --- LÓGICA ASISTENTE CASHEA ---
+        const inputCasheaMonto = document.getElementById('casheaMontoTotal');
+        const selectLinea = document.getElementById('casheaLinea');
+        const selectCuotas = document.getElementById('casheaCuotas');
+        const resCashea = document.getElementById('resultadoCashea');
+
+        function actualizarCuotasCashea() {
+            const linea = selectLinea.value;
+            const monto = parseFloat(inputCasheaMonto.value) || 0;
+            const contCuotasPrin = document.getElementById('contenedorCuotasPrincipal');
+
+            contCuotasPrin.classList.toggle('d-none', linea === 'cotidiana');
+
+            if (monto > 0) {
+                resCashea.classList.remove('d-none');
+                const inicial = monto * 0.40; // Pago inicial estándar 40%
+                const restante = monto - inicial;
+                const nCuotas = linea === 'cotidiana' ? 1 : parseInt(selectCuotas.value);
+                const montoCuota = restante / nCuotas;
+
+                document.getElementById('casheaInicial').innerText = `$${inicial.toFixed(2)}`;
+                document.getElementById('casheaMontoCuota').innerText = `$${montoCuota.toFixed(2)}`;
+            } else {
+                resCashea.classList.add('d-none');
+            }
+        }
+
+        [inputCasheaMonto, selectLinea, selectCuotas].forEach(el => {
+            el.addEventListener('input', actualizarCuotasCashea);
+        });
+
+        async function registrarCashea() {
+            const monto = parseFloat(inputCasheaMonto.value);
+            const linea = selectLinea.value;
+            const nCuotas = linea === 'cotidiana' ? 1 : parseInt(selectCuotas.value);
+            const inicial = monto * 0.40;
+            const montoCuota = (monto - inicial) / nCuotas;
+
+            if (!confirm(`¿Registrar pago inicial de $${inicial.toFixed(2)} y ${nCuotas} cuotas de $${montoCuota.toFixed(2)}?`)) return;
+
+            // 1. Registrar pago inicial (hoy)
+            await llamarBackend('saveFinance', {
+                payload: { tipo: 'egreso', nombre: 'Cashea - Inicial', monto: inicial, fecha: new Date().toISOString(), ownerId: currentUser.id }
+            });
+
+            // 2. Registrar cuotas futuras
+            const fechaBase = new Date(); // Podría ser una fecha seleccionada en el futuro
+            for (let i = 1; i <= nCuotas; i++) {
+                const fechaCuota = new Date(fechaBase);
+                fechaCuota.setDate(fechaBase.getDate() + (i * 14)); // Intervalos exactos de 14 días
+
+                await llamarBackend('saveFinance', {
+                    payload: {
+                        tipo: 'egreso',
+                        nombre: `Cashea - Cuota ${i}/${nCuotas} (${linea})`,
+                        monto: montoCuota,
+                        fecha: fechaCuota.toISOString(),
+                        ownerId: currentUser.id
+                    }
+                });
+            }
+
+            alert("Plan Cashea registrado con éxito");
+            cargarDatosIniciales();
+        }
 
         // --- CALCULADORA DE INCIDENCIA (TIEMPO REAL) ---
         const inputCosto = document.getElementById('costoInicial');
@@ -487,17 +732,38 @@
         async function actualizarPermiso(idInvitado, otorgar) {
             await llamarBackend('gestionarPermiso', {
                 idInvitado: idInvitado,
-                accionPermiso: otorgar ? 'conceder' : 'revocar'
+                accionPermiso: otorgar ? 'conceder' : 'revocar',
+                userId: currentUser.id
             });
             console.log(`Permiso ${otorgar ? 'concedido' : 'revocado'} para usuario ${idInvitado}`);
         }
 
-        // Al cargar datos iniciales, también cargar lista de compartir
-        const originalCargarDatos = cargarDatosIniciales;
-        cargarDatosIniciales = async function () {
-            await originalCargarDatos();
-            cargarListaCompartir();
-        };
+        // --- LÓGICA DE INSTALACIÓN PWA ---
+        let deferredPrompt;
+        const btnInstalar = document.getElementById('btnInstalar');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            btnInstalar.classList.remove('d-none');
+        });
+
+        btnInstalar.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    btnInstalar.classList.add('d-none');
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            btnInstalar.classList.add('d-none');
+            console.log('PWA instalada con éxito');
+        });
+
     </script>
 </body>
 
