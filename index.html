@@ -241,12 +241,18 @@
                 </form>
             </div>
 
-            <div class="card p-3 shadow-sm">
+            <div class="card p-3 shadow-sm mb-3">
                 <h5><i class="bi bi-share"></i> Privacidad de Mis Finanzas</h5>
                 <p class="small text-muted">Selecciona quién puede ver tus deudas e ingresos:</p>
                 <div id="listaUsuariosCompartir" class="list-group list-group-flush">
                     <div class="text-center p-2">Cargando usuarios...</div>
                 </div>
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-outline-danger w-100" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </button>
             </div>
         </div>
     </div>
@@ -335,6 +341,13 @@
                 const data = await llamarBackend('login', { email, password: pass });
                 if (data.success) {
                     currentUser = data.user;
+
+                    // --- PERSISTENCIA DE SESIÓN ---
+                    localStorage.setItem('plannerUser', JSON.stringify({
+                        user: currentUser,
+                        timestamp: new Date().getTime()
+                    }));
+
                     document.getElementById('loginWall').classList.add('d-none'); // Quita el muro
                     cargarDatosIniciales();
                 } else {
@@ -763,6 +776,25 @@
             btnInstalar.classList.add('d-none');
             console.log('PWA instalada con éxito');
         });
+
+        // --- INICIO AUTOMÁTICO AL CARGAR ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const session = JSON.parse(localStorage.getItem('plannerUser'));
+            const UN_DIA = 24 * 60 * 60 * 1000;
+
+            if (session && (new Date().getTime() - session.timestamp < UN_DIA)) {
+                currentUser = session.user;
+                document.getElementById('loginWall').classList.add('d-none');
+                cargarDatosIniciales();
+            }
+        });
+
+        function cerrarSesion() {
+            if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+                localStorage.removeItem('plannerUser');
+                location.reload();
+            }
+        }
 
     </script>
 </body>
