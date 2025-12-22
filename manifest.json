@@ -1,0 +1,17 @@
+{
+  "name": "MarketPlanner OS",
+  "short_name": "MarketPlanner",
+  "description": "Tu mentor técnico y gestor de mercado inteligente.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "icons": [
+    {
+      "src": "app_icon_marketplanner_1766378047051.png",
+      "sizes": "192x192 384x384 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
