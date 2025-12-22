@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPlanner OS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card-resumen { background-color: #ffffff; border-left: 5px solid #0d6efd; }
+        .precio-bs { color: #6c757d; font-size: 0.9em; }
+        .nav-link.active { font-weight: bold; }
+        /* Botón flotante para agregar */
+        .fab {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginWall" class="position-fixed w-100 h-100 bg-white" style="z-index: 2000; top: 0; left: 0;">
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock-fill text-primary" style="font-size: 3rem;"></i>
+                <h3 class="mt-2">MarketPlanner OS</h3>
+                <p class="text-muted">Inicia sesión para continuar</p>
+            </div>
+            <form id="formLogin">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" required placeholder="tu@email.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" id="loginPass" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <nav class="navbar navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1"><i class="bi bi-cart4"></i> MarketPlanner</span>
+            <div class="text-white text-end">
+                <small>BCV: <span id="displayTasa">0.00</span> Bs</small>
+            </div>
+        </div>
+    </nav>
+
+    <ul class="nav nav-tabs nav-justified bg-white shadow-sm" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒 Lista</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button">💰 Finanzas</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button">⚙️ Ajustes</button>
+        </li>
+    </ul>
+
+    <div class="container mt-3 tab-content" id="myTabContent">
+        
+        <div class="tab-pane fade show active" id="lista" role="tabpanel">
+            
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador">
+            </div>
+
+            <div class="card card-resumen mb-3 shadow-sm">
+                <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="m-0 text-primary">Total Estimado</h6>
+                        <small class="text-muted">Incidencia incluida</small>
+                    </div>
+                    <div class="text-end">
+                        <h4 class="m-0" id="totalGeneralUSD">$0.00</h4>
+                        <span class="precio-bs" id="totalGeneralBS">Bs 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contenedorProductos" class="list-group">
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">Harina Pan <span class="badge bg-success rounded-pill">Vital</span></div>
+                        <small>Mercado: Mayorista</small><br>
+                        <small>Cant: 2 | $1.50 c/u</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary">$3.00</span><br>
+                        <small class="text-muted">Bs 180.00</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="finanzas" role="tabpanel">
+            
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-light fw-bold">📉 Calculadora de Incidencia</div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Costo Inicial ($)</label>
+                            <input type="number" class="form-control" id="costoInicial" placeholder="0.00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">% Incidencia</label>
+                            <input type="number" class="form-control" id="porcentajeIncidencia" value="10">
+                        </div>
+                    </div>
+                    <div class="mt-2 p-2 bg-light border rounded text-center">
+                        <strong>Costo Final: <span id="costoFinalCalc">$0.00</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="border-bottom pb-2">Planificación de Pagos</h5>
+            <div class="alert alert-info py-2">
+                <small>💰 Disponible: <strong id="dineroDisponible">$0.00</strong> (Ingresos - Deudas)</small>
+            </div>
+            
+            <ul class="list-group mb-5" id="listaFinanzas">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Tarjeta de Crédito
+                    <span class="badge bg-danger rounded-pill">-$50.00 (15/12)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Sueldo Quincena
+                    <span class="badge bg-success rounded-pill">+$200.00</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-pane fade" id="config" role="tabpanel">
+            <div class="card p-3 shadow-sm mb-3" id="seccionAdmin">
+                <h5><i class="bi bi-person-plus"></i> Registrar Usuario</h5>
+                <form id="formNuevoUsuario" class="row g-2">
+                    <div class="col-6">
+                        <input type="text" id="regNombre" class="form-control form-control-sm" placeholder="Nombre" required>
+                    </div>
+                    <div class="col-6">
+                        <input type="email" id="regEmail" class="form-control form-control-sm" placeholder="Email" required>
+                    </div>
+                    <div class="col-6">
+                        <input type="password" id="regPass" class="form-control form-control-sm" placeholder="Contraseña" required>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success btn-sm w-100">Crear Usuario</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card p-3 shadow-sm">
+                <h5><i class="bi bi-share"></i> Privacidad de Mis Finanzas</h5>
+                <p class="small text-muted">Selecciona quién puede ver tus deudas e ingresos:</p>
+                <div id="listaUsuariosCompartir" class="list-group list-group-flush">
+                    <div class="text-center p-2">Cargando usuarios...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+        <i class="bi bi-plus-lg"></i>
+    </button>
+
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formProducto">
+                        <div class="mb-2">
+                            <label>Producto</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label>Precio ($)</label>
+                                <input type="number" step="0.01" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label>Cantidad</label>
+                                <input type="number" class="form-control" value="1" required>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Mercado</label>
+                            <input type="text" class="form-control" list="mercadosList">
+                            <datalist id="mercadosList">
+                                <option value="Supermercado A">
+                                <option value="Mercado Municipal">
+                            </datalist>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1J1hxN5wb6evXxenQTcfvZZ0htOz1z2_s4fnrk-L0nck84iCBXdMw5OCCMACTj0ec/exec"; // <--- ASEGÚRATE DE PEGARLA
+        let currentUser = null;
+        let tasaBCV = 0;
+
+        // --- FUNCIÓN PARA ENVIAR DATOS AL BACKEND ---
+        async function llamarBackend(accion, payload = {}) {
+            const body = JSON.stringify({ action: accion, ...payload });
+            
+            // Usamos el modo 'cors' con un pequeño truco de redirección de Google
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: body,
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+            return await response.json();
+        }
+
+        // --- LÓGICA DE LOGIN ---
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            try {
+                const data = await llamarBackend('login', { email, password: pass });
+                if (data.success) {
+                    currentUser = data.user;
+                    document.getElementById('loginWall').classList.add('d-none'); // Quita el muro
+                    cargarDatosIniciales();
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error de conexión con el servidor.");
+            }
+        });
+
+        // --- CARGAR DATOS (PRODUCTOS Y FINANZAS) ---
+        async function cargarDatosIniciales() {
+            const data = await llamarBackend('getInitialData', { userId: currentUser.id });
+            tasaBCV = data.tasa;
+            document.getElementById('displayTasa').innerText = tasaBCV.toFixed(2);
+            
+            renderizarProductos(data.products);
+            renderizarFinanzas(data.finanzas);
+        }
+
+        // --- RENDERIZADO DE PRODUCTOS (CON BÚSQUEDA) ---
+        function renderizarProductos(productos) {
+            const contenedor = document.getElementById('contenedorProductos');
+            contenedor.innerHTML = "";
+            let totalUSD = 0;
+
+            productos.forEach(p => {
+                // p[0]=id, p[1]=nombre, p[2]=cantidad, p[3]=precio_usd, p[4]=mercado...
+                const subtotal = p[2] * p[3];
+                totalUSD += subtotal;
+
+                contenedor.innerHTML += `
+                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">${p[1]} <span class="badge bg-info">${p[5] || 'General'}</span></div>
+                            <small class="text-muted">📍 ${p[4]}</small><br>
+                            <small>${p[2]} x $${p[3]}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold text-primary">$${subtotal.toFixed(2)}</span><br>
+                            <small class="precio-bs">Bs ${(subtotal * tasaBCV).toFixed(2)}</small>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('totalGeneralUSD').innerText = `$${totalUSD.toFixed(2)}`;
+            document.getElementById('totalGeneralBS').innerText = `Bs ${(totalUSD * tasaBCV).toFixed(2)}`;
+        }
+
+        // --- CALCULADORA DE INCIDENCIA (TIEMPO REAL) ---
+        const inputCosto = document.getElementById('costoInicial');
+        const inputIncid = document.getElementById('porcentajeIncidencia');
+
+        [inputCosto, inputIncid].forEach(el => {
+            el.addEventListener('input', () => {
+                const costo = parseFloat(inputCosto.value) || 0;
+                const porc = parseFloat(inputIncid.value) || 0;
+                const total = costo + (costo * (porc / 100));
+                document.getElementById('costoFinalCalc').innerText = `$${total.toFixed(2)} | Bs ${(total * tasaBCV).toFixed(2)}`;
+            });
+        });
+
+        function renderizarFinanzas(finanzas) {
+            const lista = document.getElementById('listaFinanzas');
+            const displayDisponible = document.getElementById('dineroDisponible');
+            lista.innerHTML = "";
+            
+            let totalIngresos = 0;
+            let totalDeudas = 0;
+
+            // Ordenar por fecha (asumiendo que la fecha es la columna D, índice 3)
+            finanzas.sort((a, b) => new Date(a[3]) - new Date(b[3]));
+
+            finanzas.forEach(f => {
+                const monto = parseFloat(f[2]);
+                const esIngreso = f[0].toLowerCase() === 'ingreso';
+                const fechaFormateada = f[3] ? new Date(f[3]).toLocaleDateString() : 'S/F';
+                
+                if (esIngreso) totalIngresos += monto;
+                else totalDeudas += monto;
+
+                lista.innerHTML += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${f[1]}</strong><br>
+                            <small class="text-muted"><i class="bi bi-calendar"></i> ${fechaFormateada}</small>
+                        </div>
+                        <span class="badge ${esIngreso ? 'bg-success' : 'bg-danger'} rounded-pill">
+                            ${esIngreso ? '+' : '-'}$${monto.toFixed(2)}
+                        </span>
+                    </li>
+                `;
+            });
+
+            const disponible = totalIngresos - totalDeudas;
+            displayDisponible.innerText = `$${disponible.toFixed(2)} | Bs ${(disponible * tasaBCV).toFixed(2)}`;
+            displayDisponible.className = disponible >= 0 ? "text-success fw-bold" : "text-danger fw-bold";
+        }
+
+        // --- REGISTRAR NUEVO USUARIO ---
+        document.getElementById('formNuevoUsuario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                nombre: document.getElementById('regNombre').value,
+                email: document.getElementById('regEmail').value,
+                pass: document.getElementById('regPass').value,
+                rol: 'Usuario'
+            };
+
+            const res = await llamarBackend('crearUsuario', { payload });
+            if(res.success) {
+                alert("Usuario creado con éxito");
+                e.target.reset();
+                cargarListaCompartir(); // Refrescar lista
+            }
+        });
+
+        // --- CARGAR OTROS USUARIOS PARA COMPARTIR ---
+        async function cargarListaCompartir() {
+            const data = await llamarBackend('getAllUsers'); // Necesitamos crear esta función en el Script
+            const contenedor = document.getElementById('listaUsuariosCompartir');
+            contenedor.innerHTML = "";
+
+            data.usuarios.forEach(u => {
+                if(u.id == currentUser.id) return; // No listarme a mí mismo
+
+                contenedor.innerHTML += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${u.nombre}</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" 
+                                   onchange="actualizarPermiso(${u.id}, this.checked)"
+                                   ${u.tieneAcceso ? 'checked' : ''}>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function actualizarPermiso(idInvitado, otorgar) {
+            await llamarBackend('gestionarPermiso', {
+                idInvitado: idInvitado,
+                accionPermiso: otorgar ? 'conceder' : 'revocar'
+            });
+            console.log(`Permiso ${otorgar ? 'concedido' : 'revocado'} para usuario ${idInvitado}`);
+        });
+    </script>
+</body>
+</html>
