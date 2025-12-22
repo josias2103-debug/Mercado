@@ -780,9 +780,8 @@
         // --- INICIO AUTOMÁTICO AL CARGAR ---
         window.addEventListener('DOMContentLoaded', () => {
             const session = JSON.parse(localStorage.getItem('plannerUser'));
-            const UN_DIA = 24 * 60 * 60 * 1000;
 
-            if (session && (new Date().getTime() - session.timestamp < UN_DIA)) {
+            if (session && session.user) {
                 currentUser = session.user;
                 document.getElementById('loginWall').classList.add('d-none');
                 cargarDatosIniciales();
