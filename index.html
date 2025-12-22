@@ -223,14 +223,22 @@
 
         // --- FUNCIÓN PARA ENVIAR DATOS AL BACKEND ---
         async function llamarBackend(accion, payload = {}) {
-            const body = JSON.stringify({ action: accion, ...payload });
-            
-            // Usamos el modo 'cors' con un pequeño truco de redirección de Google
-            const response = await fetch(SCRIPT_URL, {
+            const url = SCRIPT_URL;
+            const data = { action: accion, ...payload };
+
+            // Usamos el método tradicional para evitar problemas de CORS con Apps Script
+            // Enviamos como texto plano para que Google no dispare el pre-flight (OPTIONS)
+            const response = await fetch(url, {
                 method: 'POST',
-                body: body,
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                mode: 'cors', 
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(data)
             });
+
+            if (!response.ok) throw new Error("Error en la red");
+            
             return await response.json();
         }
 
