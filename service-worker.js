@@ -1,12 +1,9 @@
-const CACHE_NAME = 'marketplanner-v1';
+const CACHE_NAME = 'marketplanner-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './app_icon_marketplanner_1766378047051.png',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
-  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'
+  './app_icon_marketplanner_1766378047051.png'
 ];
 
 self.addEventListener('install', event => {
