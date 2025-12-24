@@ -2,23 +2,32 @@
   "name": "MarketPlanner OS",
   "short_name": "MarketPlanner",
   "description": "Tu mentor técnico y gestor de mercado inteligente.",
-  "start_url": "index.html",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0d6efd",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "app_icon_marketplanner_1766378047051.png",
+      "src": "./app_icon_marketplanner_1766378047051.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "app_icon_marketplanner_1766378047051.png",
+      "src": "./app_icon_marketplanner_1766378047051.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": [
+    "finance",
+    "productivity",
+    "shopping"
+  ],
+  "dir": "ltr",
+  "lang": "es"
 }
