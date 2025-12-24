@@ -21,6 +21,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --primary: #0066ff;
@@ -267,6 +268,15 @@
 
         [data-bs-theme="dark"] .text-muted {
             color: var(--text-muted) !important;
+        }
+
+        /* Scanner Overlay prominence */
+        #modalScanner {
+            z-index: 2050 !important;
+        }
+
+        #modalScanner~.modal-backdrop {
+            z-index: 2040 !important;
         }
     </style>
 </head>
@@ -536,6 +546,186 @@
                     <!-- Dinámico -->
                 </ul>
             </div>
+
+            <!-- Gastos Recurrentes -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseRecurrentes">
+                    <span class="small fw-bold text-uppercase">🔁 Gastos Recurrentes</span>
+                    <i class="bi bi-calendar-check text-primary"></i>
+                </div>
+                <div id="collapseRecurrentes" class="collapse">
+                    <div class="card-body">
+                        <button class="btn btn-sm btn-primary w-100 mb-3" data-bs-toggle="modal"
+                            data-bs-target="#modalRecurrente">
+                            <i class="bi bi-plus-circle"></i> Agregar Gasto Recurrente
+                        </button>
+                        <div id="listaRecurrentes" class="small">
+                            <!-- Lista dinámica de gastos recurrentes -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gastos Variables Semanales -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseVariables">
+                    <span class="small fw-bold text-uppercase">📊 Gastos Variables (Semanales)</span>
+                    <i class="bi bi-cash-stack text-primary"></i>
+                </div>
+                <div id="collapseVariables" class="collapse">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <select class="form-select form-select-sm mb-2" id="categoriaVariable">
+                                <option value="Transporte">🚗 Transporte</option>
+                                <option value="Comida">🍔 Comida</option>
+                                <option value="Servicios">🔧 Servicios</option>
+                                <option value="Otros">📦 Otros</option>
+                            </select>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control" id="conceptoVariable"
+                                    placeholder="Ej: Carrera de moto">
+                                <input type="number" step="0.01" class="form-control" id="montoVariable"
+                                    placeholder="$">
+                                <button class="btn btn-primary" onclick="agregarGastoVariable()"><i
+                                        class="bi bi-plus-lg"></i></button>
+                            </div>
+                        </div>
+                        <div id="resumenSemanal" class="alert bg-primary-soft border-0 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span class="small">Total de la semana:</span>
+                                <strong id="totalSemanalUSD" class="text-primary">$0.00</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="small">En Bs:</span>
+                                <strong id="totalSemanalBS" class="text-muted">Bs 0.00</strong>
+                            </div>
+                        </div>
+                        <div id="listaVariables" class="mb-2">
+                            <!-- Lista de gastos de la semana -->
+                        </div>
+                        <button class="btn btn-sm btn-success w-100" onclick="pagarSemana()" id="btnPagarSemana">
+                            <i class="bi bi-check-circle"></i> Marcar como Pagado y Resetear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ahorros -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseAhorros">
+                    <span class="small fw-bold text-uppercase">💰 Ahorros</span>
+                    <i class="bi bi-piggy-bank text-primary"></i>
+                </div>
+                <div id="collapseAhorros" class="collapse">
+                    <div class="card-body">
+                        <div class="alert bg-success bg-opacity-10 border-0 mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="small text-muted">Total en USD</div>
+                                    <h5 class="mb-0 text-success" id="totalAhorrosUSD">$0.00</h5>
+                                </div>
+                                <div class="text-end">
+                                    <div class="small text-muted">Total en Bs</div>
+                                    <h5 class="mb-0 text-success" id="totalAhorrosBS">Bs 0.00</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mb-3">
+                            <button class="btn btn-sm btn-success flex-fill" data-bs-toggle="modal"
+                                data-bs-target="#modalAhorros" onclick="prepararAhorroModal('deposito')">
+                                <i class="bi bi-plus-circle"></i> Agregar Fondos
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger flex-fill" data-bs-toggle="modal"
+                                data-bs-target="#modalAhorros" onclick="prepararAhorroModal('retiro')">
+                                <i class="bi bi-dash-circle"></i> Retirar Fondos
+                            </button>
+                        </div>
+                        <div id="historialAhorros" class="small">
+                            <!-- Historial de transacciones -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard con Gráficas -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseDashboard">
+                    <span class="small fw-bold text-uppercase">📈 Dashboard Financiero</span>
+                    <i class="bi bi-graph-up text-primary"></i>
+                </div>
+                <div id="collapseDashboard" class="collapse">
+                    <div class="card-body">
+                        <!-- Resumen de Métricas -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="p-2 rounded"
+                                    style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">
+                                    <div class="small text-white opacity-75">Ingresos (Mes)</div>
+                                    <h6 class="mb-0 text-white" id="statIngresosMes">$0.00</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded"
+                                    style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                    <div class="small text-white opacity-75">Gastos (Mes)</div>
+                                    <h6 class="mb-0 text-white" id="statGastosMes">$0.00</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded"
+                                    style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                                    <div class="small text-dark opacity-75">Balance</div>
+                                    <h6 class="mb-0 text-dark" id="statBalance">$0.00</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded"
+                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <div class="small text-white opacity-75">Ahorros</div>
+                                    <h6 class="mb-0 text-white" id="statAhorros">$0.00</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabs para diferentes gráficas -->
+                        <ul class="nav nav-pills nav-fill mb-2 small" id="chartTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-1" id="tab-monthly" data-bs-toggle="tab"
+                                    data-bs-target="#monthly-charts" type="button"
+                                    style="font-size: 0.75rem;">Mensual</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-1" id="tab-weekly" data-bs-toggle="tab"
+                                    data-bs-target="#weekly-charts" type="button"
+                                    style="font-size: 0.75rem;">Semanal</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-1" id="tab-comparison" data-bs-toggle="tab"
+                                    data-bs-target="#comparison-chart" type="button"
+                                    style="font-size: 0.75rem;">Comparativa</button>
+                            </li>
+                        </ul>
+
+                        <!-- Contenido de tabs -->
+                        <div class="tab-content" id="chartTabsContent">
+                            <div class="tab-pane fade show active" id="monthly-charts" role="tabpanel">
+                                <canvas id="chartMensual" height="200"></canvas>
+                            </div>
+                            <div class="tab-pane fade" id="weekly-charts" role="tabpanel">
+                                <canvas id="chartSemanal" height="200"></canvas>
+                            </div>
+                            <div class="tab-pane fade" id="comparison-chart" role="tabpanel">
+                                <canvas id="chartComparativa" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div> <!-- FIN FINANZAS -->
 
         <div class="tab-pane fade" id="config" role="tabpanel">
@@ -644,6 +834,93 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary w-100">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gasto Recurrente -->
+    <div class="modal fade" id="modalRecurrente" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Gasto Recurrente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formRecurrente">
+                        <div class="mb-2">
+                            <label class="form-label small">Nombre del Gasto</label>
+                            <input type="text" class="form-control form-control-sm" id="recNombre"
+                                placeholder="Ej: Renta de Internet" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Monto (USD)</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm" id="recMonto"
+                                placeholder="0.00" required oninput="actualizarConversionRecurrente()">
+                            <small class="text-muted">≈ Bs <span id="recConversionBS">0.00</span></small>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Frecuencia</label>
+                            <select class="form-select form-select-sm" id="recFrecuencia" required
+                                onchange="actualizarDiaVencimiento()">
+                                <option value="monthly">Mensual</option>
+                                <option value="weekly">Semanal</option>
+                            </select>
+                        </div>
+                        <div class="mb-2" id="divDiaVencimiento">
+                            <label class="form-label small">Día de Vencimiento</label>
+                            <input type="number" class="form-control form-control-sm" id="recDia" min="1" max="31"
+                                placeholder="Día del mes" required>
+                            <small class="text-muted" id="helperDia">Día del mes (1-31)</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-primary"
+                        onclick="guardarGastoRecurrente()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ahorros -->
+    <div class="modal fade" id="modalAhorros" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModalAhorros">Transacción de Ahorros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formAhorros">
+                        <input type="hidden" id="ahorroTipo" value="deposito">
+                        <div class="mb-2">
+                            <label class="form-label small">Moneda</label>
+                            <select class="form-select form-select-sm" id="ahorroMoneda"
+                                onchange="actualizarConversionAhorro()">
+                                <option value="USD">USD 💵</option>
+                                <option value="BS">Bs 💰</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Monto</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm" id="ahorroMonto"
+                                placeholder="0.00" required oninput="actualizarConversionAhorro()">
+                            <small class="text-muted" id="ahorroConversion"></small>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Nota (Opcional)</label>
+                            <input type="text" class="form-control form-control-sm" id="ahorroNota"
+                                placeholder="Ej: Ahorro mensual">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-success" id="btnGuardarAhorro"
+                        onclick="guardarAhorro()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -800,7 +1077,8 @@
 
             if (Notification.permission === "granted") {
                 const hoy = new Date();
-                // Buscar deudas que venzan en los próximos 3 días
+
+                // 1. Buscar deudas que venzan en los próximos 3 días
                 const deudasProntas = finanzas.filter(f => {
                     const fecha = new Date(f[3]);
                     const difDias = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
@@ -813,6 +1091,26 @@
                         body: `Vencen pronto: ${nombresDeudas}. Revisa tu flujo de caja.`,
                         icon: 'app_icon_marketplanner_1766378047051.png'
                     });
+                }
+
+                // 2. Verificar gastos recurrentes próximos
+                const stored = localStorage.getItem('gastosRecurrentes_' + currentUser.id);
+                if (stored) {
+                    const gastosRec = JSON.parse(stored);
+                    const recurrentesProntos = gastosRec.filter(g => {
+                        const fechaVence = new Date(g.proximoPago);
+                        const difDias = Math.ceil((fechaVence - hoy) / (1000 * 60 * 60 * 24));
+                        return difDias >= 0 && difDias <= 3;
+                    });
+
+                    if (recurrentesProntos.length > 0) {
+                        const nombresRec = recurrentesProntos.map(g => `${g.nombre} ($${g.monto.toFixed(2)})`).join(", ");
+                        new Notification("MarketPlanner: Gastos Recurrentes", {
+                            body: `Próximos a vencer: ${nombresRec}`,
+                            icon: 'app_icon_marketplanner_1766378047051.png',
+                            tag: 'recurring-expenses'
+                        });
+                    }
                 }
             }
         }
@@ -828,6 +1126,12 @@
 
                 renderizarProductos(data.products);
                 renderizarFinanzas(data.finanzas);
+
+                // Cargar nuevas funcionalidades
+                cargarGastosRecurrentes();
+                cargarGastosVariables();
+                cargarAhorros();
+                cargarDashboard();
 
                 verificarNotificaciones(data.finanzas);
                 cargarListaCompartir();
@@ -1066,7 +1370,9 @@
 
             try {
                 const action = currentEditId ? 'updateProduct' : 'saveProduct';
-                const payloadFinal = currentEditId ? { id: currentEditId, payload } : { payload };
+                // Si es nuevo y hay barcode, usarlo como ID
+                const finalId = currentEditId || (barcode ? barcode : null);
+                const payloadFinal = finalId ? { id: finalId, payload } : { payload };
 
                 const res = await llamarBackend(action, { ...payloadFinal, userId: currentUser.id });
                 if (res.success) {
@@ -1505,6 +1811,773 @@
                 location.reload();
             }
         }
+
+        // ==================== NUEVAS FUNCIONALIDADES FINANCIERAS ====================
+
+        // Variables globales para las nuevas funcionalidades
+        let gastosRecurrentes = [];
+        let gastosVariables = [];
+        let ahorrosData = [];
+        let chartsInstances = {
+            mensual: null,
+            semanal: null,
+            comparativa: null
+        };
+
+        // ===== GASTOS RECURRENTES =====
+
+        function actualizarConversionRecurrente() {
+            const monto = parseFloat(document.getElementById('recMonto').value) || 0;
+            document.getElementById('recConversionBS').textContent = (monto * tasaBCV).toFixed(2);
+        }
+
+        function actualizarDiaVencimiento() {
+            const frecuencia = document.getElementById('recFrecuencia').value;
+            const input = document.getElementById('recDia');
+            const helper = document.getElementById('helperDia');
+
+            if (frecuencia === 'weekly') {
+                input.max = 7;
+                input.placeholder = "Día de la semana";
+                helper.textContent = "Día de la semana (1=Lunes, 7=Domingo)";
+            } else {
+                input.max = 31;
+                input.placeholder = "Día del mes";
+                helper.textContent = "Día del mes (1-31)";
+            }
+        }
+
+        async function guardarGastoRecurrente() {
+            const nombre = document.getElementById('recNombre').value.trim();
+            const monto = parseFloat(document.getElementById('recMonto').value);
+            const frecuencia = document.getElementById('recFrecuencia').value;
+            const dia = parseInt(document.getElementById('recDia').value);
+
+            if (!nombre || !monto || !dia) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const gasto = {
+                id: Date.now() + '_' + currentUser.id,
+                nombre,
+                monto,
+                frecuencia,
+                diaVencimiento: dia,
+                ownerId: currentUser.id,
+                proximoPago: calcularProximoPago(frecuencia, dia)
+            };
+
+            try {
+                // Intentar guardar en backend primero
+                try {
+                    const res = await llamarBackend('saveRecurringExpense', { payload: gasto });
+                    if (res.success) {
+                        console.log('Gasto recurrente guardado en backend');
+                    }
+                } catch (backendError) {
+                    console.warn('Backend no disponible, usando localStorage:', backendError);
+                }
+
+                // Siempre guardar en localStorage como respaldo
+                gastosRecurrentes.push(gasto);
+                localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecurrentes));
+
+                bootstrap.Modal.getInstance(document.getElementById('modalRecurrente')).hide();
+                document.getElementById('formRecurrente').reset();
+
+                cargarGastosRecurrentes();
+                alert('Gasto recurrente agregado con éxito');
+            } catch (err) {
+                console.error(err);
+                alert('Error al guardar el gasto recurrente');
+            }
+        }
+
+        function calcularProximoPago(frecuencia, dia) {
+            const hoy = new Date();
+            let proximaFecha = new Date();
+
+            if (frecuencia === 'monthly') {
+                proximaFecha.setDate(dia);
+                if (proximaFecha <= hoy) {
+                    proximaFecha.setMonth(proximaFecha.getMonth() + 1);
+                }
+            } else { // weekly
+                const diaActual = hoy.getDay() || 7; // Domingo = 7
+                let diasHasta = dia - diaActual;
+                if (diasHasta <= 0) diasHasta += 7;
+                proximaFecha.setDate(hoy.getDate() + diasHasta);
+            }
+
+            return proximaFecha.toISOString().split('T')[0];
+        }
+
+        async function cargarGastosRecurrentes() {
+            // Intentar cargar desde backend primero
+            try {
+                const res = await llamarBackend('getRecurringExpenses', { userId: currentUser.id });
+                if (res.success && res.data && res.data.length > 0) {
+                    gastosRecurrentes = res.data;
+                    // Sincronizar con localStorage
+                    localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecurrentes));
+                    console.log('Gastos recurrentes cargados desde backend');
+                } else {
+                    throw new Error('No data from backend');
+                }
+            } catch (backendError) {
+                // Fallback a localStorage
+                console.warn('Usando localStorage para gastos recurrentes');
+                const stored = localStorage.getItem('gastosRecurrentes_' + currentUser.id);
+                gastosRecurrentes = stored ? JSON.parse(stored) : [];
+            }
+
+            const lista = document.getElementById('listaRecurrentes');
+            if (!lista) return;
+            lista.innerHTML = '';
+
+            if (gastosRecurrentes.length === 0) {
+                lista.innerHTML = '<p class="text-muted text-center small">No hay gastos recurrentes</p>';
+                return;
+            }
+
+            const hoy = new Date();
+            gastosRecurrentes.forEach(g => {
+                const fechaVence = new Date(g.proximoPago);
+                const diasRestantes = Math.ceil((fechaVence - hoy) / (1000 * 60 * 60 * 24));
+
+                let badge = '';
+                if (diasRestantes < 0) {
+                    badge = '<span class="badge bg-danger ms-1">Vencido</span>';
+                } else if (diasRestantes <= 3) {
+                    badge = '<span class="badge bg-warning text-dark ms-1">¡Próximo!</span>';
+                }
+
+                lista.innerHTML += `
+                    <div class="border rounded p-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>${g.nombre}</strong> ${badge}
+                                <div class="small text-muted">
+                                    ${g.frecuencia === 'monthly' ? '📅 Mensual' : '📆 Semanal'} - 
+                                    Vence: ${new Date(g.proximoPago).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold text-primary">$${parseFloat(g.monto).toFixed(2)}</div>
+                                <small class="text-muted">Bs ${(parseFloat(g.monto) * tasaBCV).toFixed(2)}</small>
+                            </div>
+                        </div>
+                        <div class="mt-2 d-flex gap-1">
+                            <button class="btn btn-sm btn-success flex-fill" onclick="marcarRecurrentePagado('${g.id}')" style="font-size: 0.7rem;">
+                                <i class="bi bi-check-circle"></i> Pagado
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="eliminarRecurrente('${g.id}')" style="font-size: 0.7rem;">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function marcarRecurrentePagado(id) {
+            const gasto = gastosRecurrentes.find(g => g.id === id);
+            if (!gasto) return;
+
+            if (!confirm(`¿Marcar "${gasto.nombre}" como pagado?`)) return;
+
+            // Registrar el pago en finanzas
+            await llamarBackend('saveFinance', {
+                payload: {
+                    tipo: 'egreso',
+                    nombre: `${gasto.nombre} (Recurrente)`,
+                    monto: gasto.monto,
+                    fecha: new Date().toISOString(),
+                    ownerId: currentUser.id
+                }
+            });
+
+            // Actualizar próximo pago
+            const nuevaFecha = new Date(gasto.proximoPago);
+            if (gasto.frecuencia === 'monthly') {
+                nuevaFecha.setMonth(nuevaFecha.getMonth() + 1);
+            } else {
+                nuevaFecha.setDate(nuevaFecha.getDate() + 7);
+            }
+            gasto.proximoPago = nuevaFecha.toISOString().split('T')[0];
+
+            // Actualizar en backend
+            try {
+                await llamarBackend('updateRecurringExpense', { payload: { id: gasto.id, proximoPago: gasto.proximoPago } });
+            } catch (err) {
+                console.warn('Error actualizando en backend:', err);
+            }
+
+            // Actualizar localStorage
+            localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecurrentes));
+
+            cargarGastosRecurrentes();
+            cargarDatosIniciales();
+            alert('¡Pago registrado! Próximo vencimiento actualizado.');
+        }
+
+        async function eliminarRecurrente(id) {
+            if (!confirm('¿Eliminar este gasto recurrente?')) return;
+
+            // Eliminar del backend
+            try {
+                await llamarBackend('deleteRecurringExpense', { id, userId: currentUser.id });
+            } catch (err) {
+                console.warn('Error eliminando del backend:', err);
+            }
+
+            // Eliminar de localStorage
+            gastosRecurrentes = gastosRecurrentes.filter(g => g.id !== id);
+            localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecurrentes));
+            cargarGastosRecurrentes();
+        }
+
+        // ===== GASTOS VARIABLES SEMANALES =====
+
+        function getNumeroSemana() {
+            const hoy = new Date();
+            const inicio = new Date(hoy.getFullYear(), 0, 1);
+            const dias = Math.floor((hoy - inicio) / (24 * 60 * 60 * 1000));
+            return Math.ceil((dias + inicio.getDay() + 1) / 7);
+        }
+
+        function agregarGastoVariable() {
+            const categoria = document.getElementById('categoriaVariable').value;
+            const concepto = document.getElementById('conceptoVariable').value.trim();
+            const monto = parseFloat(document.getElementById('montoVariable').value);
+
+            if (!concepto || !monto || monto <= 0) {
+                alert('Por favor completa el concepto y monto');
+                return;
+            }
+
+            const semanaActual = getNumeroSemana();
+            const stored = localStorage.getItem('gastosVariables_' + currentUser.id);
+            let gastosSemanales = stored ? JSON.parse(stored) : [];
+
+            // Buscar si ya existe un registro para esta semana y categoría
+            let registroSemana = gastosSemanales.find(g => g.semana === semanaActual && g.categoria === categoria);
+
+            if (!registroSemana) {
+                registroSemana = {
+                    semana: semanaActual,
+                    categoria: categoria,
+                    gastos: [],
+                    totalSemana: 0,
+                    pagado: false,
+                    ownerId: currentUser.id
+                };
+                gastosSemanales.push(registroSemana);
+            }
+
+            registroSemana.gastos.push({
+                concepto,
+                monto,
+                fecha: new Date().toISOString()
+            });
+
+            registroSemana.totalSemana = registroSemana.gastos.reduce((sum, g) => sum + g.monto, 0);
+
+            localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(gastosSemanales));
+
+            document.getElementById('conceptoVariable').value = '';
+            document.getElementById('montoVariable').value = '';
+
+            cargarGastosVariables();
+        }
+
+        function cargarGastosVariables() {
+            const semanaActual = getNumeroSemana();
+            const stored = localStorage.getItem('gastosVariables_' + currentUser.id);
+            const gastosSemanales = stored ? JSON.parse(stored) : [];
+
+            const registrosSemanaActual = gastosSemanales.filter(g => g.semana === semanaActual && !g.pagado);
+
+            const lista = document.getElementById('listaVariables');
+            lista.innerHTML = '';
+
+            let totalSemana = 0;
+
+            registrosSemanaActual.forEach(registro => {
+                totalSemana += registro.totalSemana;
+
+                registro.gastos.forEach(gasto => {
+                    lista.innerHTML += `
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                            <small>${gasto.concepto}</small>
+                            <strong class="text-primary">$${gasto.monto.toFixed(2)}</strong>
+                        </div>
+                    `;
+                });
+            });
+
+            document.getElementById('totalSemanalUSD').textContent = `$${totalSemana.toFixed(2)}`;
+            document.getElementById('totalSemanalBS').textContent = `Bs ${(totalSemana * tasaBCV).toFixed(2)}`;
+
+            document.getElementById('btnPagarSemana').disabled = totalSemana === 0;
+        }
+
+        async function pagarSemana() {
+            const semanaActual = getNumeroSemana();
+            const stored = localStorage.getItem('gastosVariables_' + currentUser.id);
+            let gastosSemanales = stored ? JSON.parse(stored) : [];
+
+            const registrosSemana = gastosSemanales.filter(g => g.semana === semanaActual && !g.pagado);
+
+            if (registrosSemana.length === 0) return;
+
+            const totalSemana = registrosSemana.reduce((sum, r) => sum + r.totalSemana, 0);
+
+            if (!confirm(`¿Marcar como pagado el total de la semana: $${totalSemana.toFixed(2)}?`)) return;
+
+            // Registrar en finanzas
+            for (const registro of registrosSemana) {
+                await llamarBackend('saveFinance', {
+                    payload: {
+                        tipo: 'egreso',
+                        nombre: `${registro.categoria} - Semana ${semanaActual}`,
+                        monto: registro.totalSemana,
+                        fecha: new Date().toISOString(),
+                        ownerId: currentUser.id
+                    }
+                });
+
+                registro.pagado = true;
+            }
+
+            localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(gastosSemanales));
+
+            cargarGastosVariables();
+            cargarDatosIniciales();
+            alert('¡Semana marcada como pagada! Los gastos han sido registrados.');
+        }
+
+        // ===== AHORROS =====
+
+        function prepararAhorroModal(tipo) {
+            document.getElementById('ahorroTipo').value = tipo;
+            document.getElementById('tituloModalAhorros').textContent =
+                tipo === 'deposito' ? 'Agregar Fondos a Ahorros' : 'Retirar Fondos de Ahorros';
+
+            const btn = document.getElementById('btnGuardarAhorro');
+            btn.className = tipo === 'deposito' ? 'btn btn-sm btn-success' : 'btn btn-sm btn-danger';
+            btn.innerHTML = '<i class="bi bi-' + (tipo === 'deposito' ? 'plus' : 'dash') + '-circle"></i> Guardar';
+
+            document.getElementById('formAhorros').reset();
+            document.getElementById('ahorroTipo').value = tipo;
+        }
+
+        function actualizarConversionAhorro() {
+            const moneda = document.getElementById('ahorroMoneda').value;
+            const monto = parseFloat(document.getElementById('ahorroMonto').value) || 0;
+            const conversion = document.getElementById('ahorroConversion');
+
+            if (moneda === 'BS') {
+                const enUSD = monto / tasaBCV;
+                conversion.textContent = `≈ $${enUSD.toFixed(2)} USD`;
+            } else {
+                const enBS = monto * tasaBCV;
+                conversion.textContent = `≈ Bs ${enBS.toFixed(2)}`;
+            }
+        }
+
+        async function guardarAhorro() {
+            const tipo = document.getElementById('ahorroTipo').value;
+            const moneda = document.getElementById('ahorroMoneda').value;
+            const monto = parseFloat(document.getElementById('ahorroMonto').value);
+            const nota = document.getElementById('ahorroNota').value.trim();
+
+            if (!monto || monto <= 0) {
+                alert('Por favor ingresa un monto válido');
+                return;
+            }
+
+            const transaccion = {
+                id: Date.now(),
+                tipo,
+                monto,
+                moneda,
+                nota,
+                fecha: new Date().toISOString(),
+                ownerId: currentUser.id
+            };
+
+            const stored = localStorage.getItem('ahorros_' + currentUser.id);
+            ahorrosData = stored ? JSON.parse(stored) : [];
+
+            ahorrosData.push(transaccion);
+            localStorage.setItem('ahorros_' + currentUser.id, JSON.stringify(ahorrosData));
+
+            bootstrap.Modal.getInstance(document.getElementById('modalAhorros')).hide();
+
+            cargarAhorros();
+            alert(`${tipo === 'deposito' ? 'Fondos agregados' : 'Fondos retirados'} con éxito`);
+        }
+
+        function cargarAhorros() {
+            const stored = localStorage.getItem('ahorros_' + currentUser.id);
+            ahorrosData = stored ? JSON.parse(stored) : [];
+
+            let totalUSD = 0;
+            let totalBS = 0;
+
+            ahorrosData.forEach(t => {
+                const factor = t.tipo === 'deposito' ? 1 : -1;
+
+                if (t.moneda === 'USD') {
+                    totalUSD += t.monto * factor;
+                } else {
+                    totalBS += t.monto * factor;
+                }
+            });
+
+            // Mostrar totales
+            document.getElementById('totalAhorrosUSD').textContent = `$${totalUSD.toFixed(2)}`;
+            const totalBSConvertido = (totalUSD * tasaBCV) + totalBS;
+            document.getElementById('totalAhorrosBS').textContent = `Bs ${totalBSConvertido.toFixed(2)}`;
+
+            // Actualizar stat del dashboard
+            document.getElementById('statAhorros').textContent = `$${totalUSD.toFixed(2)}`;
+
+            // Mostrar historial
+            const historial = document.getElementById('historialAhorros');
+            historial.innerHTML = '';
+
+            if (ahorrosData.length === 0) {
+                historial.innerHTML = '<p class="text-muted text-center">No hay transacciones</p>';
+                return;
+            }
+
+            // Mostrar últimas 10 transacciones
+            const ultimas = [...ahorrosData].reverse().slice(0, 10);
+
+            ultimas.forEach(t => {
+                const icono = t.tipo === 'deposito' ? '➕' : '➖';
+                const clase = t.tipo === 'deposito' ? 'text-success' : 'text-danger';
+
+                historial.innerHTML += `
+                    <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                        <div>
+                            <div class="small">${icono} ${t.nota || (t.tipo === 'deposito' ? 'Depósito' : 'Retiro')}</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">${new Date(t.fecha).toLocaleDateString()}</div>
+                        </div>
+                        <strong class="${clase}">${t.monto.toFixed(2)} ${t.moneda}</strong>
+                    </div>
+                `;
+            });
+        }
+
+        // ===== DASHBOARD Y GRÁFICAS =====
+
+        function cargarDashboard() {
+            // Actualizar estadísticas del mes actual
+            actualizarEstadisticas();
+
+            // Renderizar gráficas
+            renderizarGraficaMensual();
+            renderizarGraficaSemanal();
+            renderizarGraficaComparativa();
+        }
+
+        function actualizarEstadisticas() {
+            const hoy = new Date();
+            const mesActual = hoy.getMonth();
+            const anioActual = hoy.getFullYear();
+
+            // Obtener datos de finanzas del mes actual
+            const stored = localStorage.getItem('plannerUser');
+            if (!stored) return;
+
+            // Calcular desde las finanzas cargadas (esto debería venir del backend idealmente)
+            let ingresosMes = 0;
+            let gastosMes = 0;
+
+            // Por ahora usar valores de ejemplo - idealmente calcular desde data real
+            document.getElementById('statIngresosMes').textContent = `$${ingresosMes.toFixed(2)}`;
+            document.getElementById('statGastosMes').textContent = `$${gastosMes.toFixed(2)}`;
+            document.getElementById('statBalance').textContent = `$${(ingresosMes - gastosMes).toFixed(2)}`;
+        }
+
+        function renderizarGraficaMensual() {
+            const ctx = document.getElementById('chartMensual');
+            if (!ctx) return;
+
+            // Destroy previous instance if exists
+            if (chartsInstances.mensual) {
+                chartsInstances.mensual.destroy();
+            }
+
+            // Datos de ejemplo - en producción vendrían del backend
+            const meses = ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const ingresos = [500, 600, 550, 700, 650, 720];
+            const gastos = [400, 500, 480, 600, 550, 600];
+
+            chartsInstances.mensual = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: ingresos,
+                            backgroundColor: 'rgba(132, 250, 176, 0.7)',
+                            borderColor: 'rgba(132, 250, 176, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Gastos',
+                            data: gastos,
+                            backgroundColor: 'rgba(250, 112, 154, 0.7)',
+                            borderColor: 'rgba(250, 112, 154, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderizarGraficaSemanal() {
+            const ctx = document.getElementById('chartSemanal');
+            if (!ctx) return;
+
+            if (chartsInstances.semanal) {
+                chartsInstances.semanal.destroy();
+            }
+
+            const semanas = ['S-8', 'S-7', 'S-6', 'S-5', 'S-4', 'S-3', 'S-2', 'S-1'];
+            const ingresos = [120, 150, 130, 180, 160, 170, 190, 200];
+            const gastos = [100, 120, 110, 150, 140, 145, 160, 155];
+
+            chartsInstances.semanal = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: semanas,
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: ingresos,
+                            borderColor: 'rgba(132, 250, 176, 1)',
+                            backgroundColor: 'rgba(132, 250, 176, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Gastos',
+                            data: gastos,
+                            borderColor: 'rgba(250, 112, 154, 1)',
+                            backgroundColor: 'rgba(250, 112, 154, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderizarGraficaComparativa() {
+            const ctx = document.getElementById('chartComparativa');
+            if (!ctx) return;
+
+            if (chartsInstances.comparativa) {
+                chartsInstances.comparativa.destroy();
+            }
+
+            chartsInstances.comparativa = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mensual', 'Semanal (promedio)'],
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: [650, 165],
+                            backgroundColor: 'rgba(132, 250, 176, 0.7)'
+                        },
+                        {
+                            label: 'Gastos',
+                            data: [550, 140],
+                            backgroundColor: 'rgba(250, 112, 154, 0.7)'
+                        },
+                        {
+                            label: 'Balance',
+                            data: [100, 25],
+                            backgroundColor: 'rgba(168, 237, 234, 0.7)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== FUNCIÓN HELPER PARA GENERAR DATOS DE PRUEBA =====
+
+        window.generarDatosDemo = function () {
+            if (!currentUser) {
+                alert('Debes iniciar sesión primero');
+                return;
+            }
+
+            if (!confirm('¿Generar datos de demostración? Esto agregará gastos recurrentes, gastos variables y ahorros de ejemplo.')) {
+                return;
+            }
+
+            // Limpiar datos existentes
+            localStorage.removeItem('gastosRecurrentes_' + currentUser.id);
+            localStorage.removeItem('gastosVariables_' + currentUser.id);
+            localStorage.removeItem('ahorros_' + currentUser.id);
+
+            // Gastos Recurrentes de ejemplo
+            const gastosRecDemo = [
+                {
+                    id: Date.now() + '_1',
+                    nombre: 'Internet',
+                    monto: 15.00,
+                    frecuencia: 'monthly',
+                    diaVencimiento: 15,
+                    ownerId: currentUser.id,
+                    proximoPago: calcularProximoPago('monthly', 15)
+                },
+                {
+                    id: Date.now() + '_2',
+                    nombre: 'Telefonía Móvil',
+                    monto: 8.50,
+                    frecuencia: 'monthly',
+                    diaVencimiento: 5,
+                    ownerId: currentUser.id,
+                    proximoPago: calcularProximoPago('monthly', 5)
+                },
+                {
+                    id: Date.now() + '_3',
+                    nombre: 'Gimnasio',
+                    monto: 25.00,
+                    frecuencia: 'monthly',
+                    diaVencimiento: 1,
+                    ownerId: currentUser.id,
+                    proximoPago: calcularProximoPago('monthly', 1)
+                }
+            ];
+            localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecDemo));
+
+            // Gastos Variables de ejemplo
+            const semanaActual = getNumeroSemana();
+            const gastosVarDemo = [
+                {
+                    semana: semanaActual,
+                    categoria: 'Transporte',
+                    gastos: [
+                        { concepto: 'Carrera moto taxi', monto: 2.50, fecha: new Date().toISOString() },
+                        { concepto: 'Bus', monto: 1.00, fecha: new Date().toISOString() },
+                        { concepto: 'Carrera moto taxi', monto: 3.00, fecha: new Date().toISOString() }
+                    ],
+                    totalSemana: 6.50,
+                    pagado: false,
+                    ownerId: currentUser.id
+                },
+                {
+                    semana: semanaActual,
+                    categoria: 'Comida',
+                    gastos: [
+                        { concepto: 'Almuerzo', monto: 5.00, fecha: new Date().toISOString() },
+                        { concepto: 'Snacks', monto: 2.50, fecha: new Date().toISOString() }
+                    ],
+                    totalSemana: 7.50,
+                    pagado: false,
+                    ownerId: currentUser.id
+                }
+            ];
+            localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(gastosVarDemo));
+
+            // Ahorros de ejemplo
+            const ahorrosDemo = [
+                {
+                    id: Date.now() - 10000,
+                    tipo: 'deposito',
+                    monto: 100.00,
+                    moneda: 'USD',
+                    nota: 'Ahorro inicial',
+                    fecha: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    ownerId: currentUser.id
+                },
+                {
+                    id: Date.now() - 5000,
+                    tipo: 'deposito',
+                    monto: 500,
+                    moneda: 'BS',
+                    nota: 'Ahorro en bolívares',
+                    fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    ownerId: currentUser.id
+                },
+                {
+                    id: Date.now(),
+                    tipo: 'deposito',
+                    monto: 50.00,
+                    moneda: 'USD',
+                    nota: 'Ahorro mensual',
+                    fecha: new Date().toISOString(),
+                    ownerId: currentUser.id
+                }
+            ];
+            localStorage.setItem('ahorros_' + currentUser.id, JSON.stringify(ahorrosDemo));
+
+            // Recargar todo
+            cargarGastosRecurrentes();
+            cargarGastosVariables();
+            cargarAhorros();
+            cargarDashboard();
+
+            alert('✅ Datos de demostración generados!\n\n🔁 3 gastos recurrentes\n📊 2 categorías de gastos variables\n💰 3 transacciones de ahorro');
+        };
+
+        // ==================== FIN NUEVAS FUNCIONALIDADES ====================
     </script>
     <script>
         // --- SYNC DARK MODE ATTRIBUTE ---
