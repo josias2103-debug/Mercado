@@ -20,6 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root {
             --primary: #0066ff;
@@ -359,6 +360,9 @@
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador"
                         autocomplete="off">
+                    <button class="btn btn-outline-primary" type="button" onclick="abrirEscanner('search')">
+                        <i class="bi bi-barcode-scan"></i>
+                    </button>
                 </div>
                 <div id="sugerenciasBusqueda" class="search-suggestions"></div>
             </div>
@@ -580,6 +584,25 @@
         </div>
     </div>
 
+    <!-- Scanner Modal -->
+    <div class="modal fade" id="modalScanner" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 overflow-hidden" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-primary">Escaneando...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        onclick="detenerEscanner()"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div id="reader" style="width: 100%; min-height: 300px;"></div>
+                </div>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <small class="text-muted">Apunta al código de barras del producto</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modalNuevo" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -606,10 +629,16 @@
                         <div class="mb-2">
                             <label>Mercado</label>
                             <input type="text" class="form-control" list="mercadosList">
-                            <datalist id="mercadosList">
-                                <option value="Supermercado A">
-                                <option value="Mercado Municipal">
-                            </datalist>
+                        </div>
+                        <div class="mb-2">
+                            <label>Código de Barras (Opcional)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="prodBarcode"
+                                    placeholder="Escanear o ingresar...">
+                                <button class="btn btn-outline-primary" type="button" onclick="abrirEscanner('form')">
+                                    <i class="bi bi-upc-scan"></i>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -623,9 +652,54 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1J1hxN5wb6evXxenQTcfvZZ0htOz1z2_s4fnrk-L0nck84iCBXdMw5OCCMACTj0ec/exec"; // <--- ASEGÚRATE DE PEGARLA
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1J1hxN5wb6evXxenQTcfvZZ0htOz1z2_s4fnrk-L0nck84iCBXdMw5OCCMACTj0ec/exec";
         let currentUser = null;
         let tasaBCV = 0;
+        let html5QrCode = null;
+
+        // --- FUNCIONES DE ESCANEO ---
+        async function abrirEscanner(contexto) {
+            const modal = new bootstrap.Modal(document.getElementById('modalScanner'));
+            modal.show();
+
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+
+            try {
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    async (decodedText) => {
+                        console.log("Barcode detected:", decodedText);
+                        detenerEscanner();
+                        bootstrap.Modal.getInstance(document.getElementById('modalScanner')).hide();
+
+                        if (contexto === 'search') {
+                            document.getElementById('buscador').value = decodedText;
+                            document.getElementById('buscador').dispatchEvent(new Event('input'));
+                        } else if (contexto === 'form') {
+                            document.getElementById('prodBarcode').value = decodedText;
+                        }
+                    }
+                );
+            } catch (err) {
+                console.error("Error starting scanner:", err);
+                alert("No se pudo iniciar el escáner. Asegúrate de dar permisos de cámara.");
+                bootstrap.Modal.getInstance(document.getElementById('modalScanner')).hide();
+            }
+        }
+
+        async function detenerEscanner() {
+            if (html5QrCode) {
+                try {
+                    await html5QrCode.stop();
+                    await html5QrCode.clear();
+                    html5QrCode = null;
+                } catch (err) {
+                    console.warn("Error stopping scanner:", err);
+                }
+            }
+        }
 
         // --- FUNCIÓN PARA ENVIAR DATOS AL BACKEND ---
         async function llamarBackend(accion, payload = {}) {
@@ -833,8 +907,10 @@
             let totalUSD = 0;
 
             productos.forEach(p => {
-                // p[1]=nombre, p[4]=mercado
-                const coincide = p[1].toLowerCase().includes(termino) || p[4].toLowerCase().includes(termino);
+                // p[1]=nombre, p[4]=mercado, p[6]=barcode
+                const coincide = p[1].toLowerCase().includes(termino) ||
+                    p[4].toLowerCase().includes(termino) ||
+                    (p[6] && p[6].toString().includes(termino));
                 if (!coincide) return;
 
                 const subtotal = p[2] * p[3];
@@ -867,7 +943,7 @@
         const buscador = document.getElementById('buscador');
         const sugerenciasContenedor = document.getElementById('sugerenciasBusqueda');
 
-        buscador.addEventListener('input', () => {
+        buscador.addEventListener('input', async () => {
             const termino = buscador.value.toLowerCase().trim();
 
             if (termino.length < 2) {
@@ -876,10 +952,12 @@
                 return;
             }
 
-            // Filtrar productos que coincidan para las sugerencias
+            // Filtrar productos que coincidan para las sugerencias (incluye barcode)
             const coincidencias = productosCache.filter(p =>
-                p[1].toLowerCase().includes(termino) || p[4].toLowerCase().includes(termino)
-            ).sort((a, b) => a[3] - b[3]); // Ordenar por precio para destacar el más económico
+                p[1].toLowerCase().includes(termino) ||
+                p[4].toLowerCase().includes(termino) ||
+                (p[6] && p[6].toString().includes(termino))
+            ).sort((a, b) => a[3] - b[3]);
 
             if (coincidencias.length > 0) {
                 sugerenciasContenedor.innerHTML = coincidencias.map(p => `
@@ -897,10 +975,55 @@
                 sugerenciasContenedor.style.display = 'block';
             } else {
                 sugerenciasContenedor.style.display = 'none';
+                // Si parece barcode y no hay local, buscar global
+                if (/^\d{8,}$/.test(termino)) {
+                    buscarBarcodeGlobal(termino);
+                }
             }
 
             renderizarProductos(productosCache);
         });
+
+        async function buscarBarcodeGlobal(barcode) {
+            try {
+                // Buscamos en el historial por barcode
+                const res = await llamarBackend('getPriceHistory', { barcode: barcode });
+                if (res.success && res.history && res.history.length > 0) {
+                    sugerenciasContenedor.innerHTML = `<div class="p-2 small fw-bold text-primary border-bottom">Encontrado en Historial:</div>` +
+                        res.history.map(h => `
+                        <div class="suggestion-item d-flex justify-content-between align-items-center" 
+                             onclick="prepararNuevoDesdeHistorial('${h.nombre}', ${h.precio}, '${h.mercado}', '${barcode}')">
+                            <div>
+                                <div class="fw-bold">${h.nombre}</div>
+                                <small class="text-muted"><i class="bi bi-shop"></i> ${h.mercado}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="suggestion-price">$${h.precio.toFixed(2)}</span><br>
+                                <button class="btn btn-sm btn-primary py-0 px-2 mt-1" style="font-size: 0.7rem;">+ Agregar</button>
+                            </div>
+                        </div>
+                    `).join('');
+                    sugerenciasContenedor.style.display = 'block';
+                }
+            } catch (err) {
+                console.warn("Error global search:", err);
+            }
+        }
+
+        window.prepararNuevoDesdeHistorial = (nombre, precio, mercado, barcode) => {
+            currentEditId = null;
+            document.querySelector('#modalNuevo .modal-title').innerText = "Agregar desde Historial";
+
+            const inputs = document.getElementById('formProducto').elements;
+            inputs[0].value = nombre;
+            inputs[1].value = precio;
+            inputs[2].value = 1;
+            inputs[3].value = mercado;
+            document.getElementById('prodBarcode').value = barcode;
+
+            sugerenciasContenedor.style.display = 'none';
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalNuevo')).show();
+        };
 
         function seleccionarSugerencia(nombre) {
             buscador.value = nombre;
@@ -925,6 +1048,7 @@
             const precio = parseFloat(inputs[1].value);
             const cantidad = parseInt(inputs[2].value);
             const mercado = inputs[3].value.trim();
+            const barcode = document.getElementById('prodBarcode').value.trim();
 
             if (!nombre || isNaN(precio) || cantidad <= 0) {
                 alert("Por favor, completa los campos correctamente.");
@@ -936,7 +1060,8 @@
                 nombre,
                 precio,
                 cantidad,
-                mercado
+                mercado,
+                barcode
             };
 
             try {
@@ -973,6 +1098,7 @@
             inputs[1].value = p[3]; // precio
             inputs[2].value = p[2]; // cantidad
             inputs[3].value = p[4]; // mercado
+            document.getElementById('prodBarcode').value = p[6] || '';
 
             bootstrap.Modal.getOrCreateInstance(document.getElementById('modalNuevo')).show();
         }
