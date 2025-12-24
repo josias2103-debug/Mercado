@@ -17,45 +17,262 @@
             });
         }
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #0066ff;
+            --primary-soft: #eef5ff;
+            --bg: #f5f7fb;
+            --card-bg: #ffffff;
+            --text-main: #1a1d23;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --card-bg: #1e293b;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --border: #334155;
+                --primary-soft: #1e3a8a;
+            }
+
+            body {
+                color-scheme: dark;
+            }
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: var(--transition);
+            -webkit-font-smoothing: antialiased;
         }
 
-        .card-resumen {
-            background-color: #ffffff;
-            border-left: 5px solid #0d6efd;
+        /* Minimalist Navbar and Tabs */
+        .navbar {
+            background: var(--card-bg) !important;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
         }
 
-        .precio-bs {
-            color: #6c757d;
-            font-size: 0.9em;
+        .navbar-brand {
+            color: var(--primary) !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-tabs {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 0.5rem;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            border: none !important;
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 1rem 0.5rem !important;
+            position: relative;
+            transition: var(--transition);
         }
 
         .nav-link.active {
-            font-weight: bold;
+            background: none !important;
+            color: var(--primary) !important;
         }
 
-        /* Botón flotante para agregar */
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Modern Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-resumen {
+            background: linear-gradient(135deg, var(--primary), #0052cc);
+            border: none;
+            color: white;
+        }
+
+        .card-resumen .text-primary,
+        .card-resumen .text-muted {
+            color: white !important;
+            opacity: 0.9;
+        }
+
+        /* Floating Action Button */
         .fab {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            bottom: 24px;
+            right: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1.5rem;
+            box-shadow: 0 4px 14px 0 rgba(0, 102, 255, 0.39);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            background: #0052cc;
+        }
+
+        /* Modern Forms */
+        .form-control,
+        .form-select {
+            background-color: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            background-color: var(--card-bg);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        /* List Items */
+        .list-group-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md) !important;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            transition: var(--transition);
+        }
+
+        .list-group-item:hover {
+            border-color: var(--primary);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.8em;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Login Wall */
+        #loginWall {
+            background: var(--bg) !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #loginWall .card {
+            width: 100%;
+            max-width: 400px;
+            border: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search Suggestions */
+        .search-suggestions {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            box-shadow: var(--shadow);
+            z-index: 1050;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .suggestion-item:hover {
+            background: var(--bg);
+        }
+
+        /* Transitions for interactive elements */
+        .btn {
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+        }
+
+        /* Adjustments for dark mode aesthetics */
+        [data-bs-theme="dark"] .bg-light {
+            background-color: var(--bg) !important;
+        }
+
+        [data-bs-theme="dark"] .text-muted {
+            color: var(--text-muted) !important;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="loginWall" class="position-fixed w-100 h-100 bg-white" style="z-index: 2000; top: 0; left: 0;">
+    <div id="loginWall" class="position-fixed w-100 h-100" style="z-index: 2000; top: 0; left: 0;">
         <div class="container h-100 d-flex justify-content-center align-items-center">
             <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
                 <div class="text-center mb-4">
@@ -73,6 +290,32 @@
                         <input type="password" id="loginPass" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+                    <div class="text-center mt-3">
+                        <a href="#" onclick="toggleAuth(true)" class="text-decoration-none">¿No tienes cuenta?
+                            Regístrate</a>
+                    </div>
+                </form>
+
+                <form id="formRegistro" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" id="regNombreSelf" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="regEmailSelf" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="regPassSelf" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 py-2">Registrarse</button>
+                    <div class="text-center mt-3">
+                        <a href="#" onclick="toggleAuth(false)" class="text-decoration-none">¿Ya tienes cuenta? Inicia
+                            sesión</a>
+                    </div>
+                    <small class="text-muted d-block mt-2 text-center">Tu cuenta deberá ser aprobada por un
+                        administrador.</small>
                 </form>
             </div>
         </div>
@@ -111,9 +354,13 @@
 
         <div class="tab-pane fade show active" id="lista" role="tabpanel">
 
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador">
+            <div class="search-container mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador"
+                        autocomplete="off">
+                </div>
+                <div id="sugerenciasBusqueda" class="search-suggestions"></div>
             </div>
 
             <div class="card card-resumen mb-3 shadow-sm">
@@ -130,136 +377,208 @@
             </div>
 
             <div id="contenedorProductos" class="list-group">
-                <div class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">Harina Pan <span class="badge bg-success rounded-pill">Vital</span></div>
-                        <small>Mercado: Mayorista</small><br>
-                        <small>Cant: 2 | $1.50 c/u</small>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-primary">$3.00</span><br>
-                        <small class="text-muted">Bs 180.00</small>
-                    </div>
-                </div>
+                <!-- Los productos se cargan aquí -->
             </div>
+
+            <button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                <i class="bi bi-plus-lg"></i>
+            </button>
         </div>
 
         <div class="tab-pane fade" id="finanzas" role="tabpanel">
 
+            <!-- Calculadora de Reparto -->
+            <div class="card mb-3 shadow-sm border-0 bg-primary-soft">
+                <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center"
+                    style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseReparto">
+                    <span class="small fw-bold text-primary text-uppercase letter-spacing-1">📊 Reparto (%)</span>
+                    <i class="bi bi-chevron-down text-primary"></i>
+                </div>
+                <div id="collapseReparto" class="collapse">
+                    <div class="card-body pt-2">
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-8">
+                                <label class="form-label small mb-1 opacity-75">Monto Total ($)</label>
+                                <input type="number" id="montoReparto" class="form-control form-control-sm"
+                                    placeholder="0.00" oninput="calcularReparto()">
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-sm btn-primary w-100" onclick="agregarFilaPorcentaje()">+
+                                    Fila</button>
+                            </div>
+                        </div>
+                        <div id="filasPorcentajes" class="small">
+                            <div class="row g-2 mb-2 align-items-center">
+                                <div class="col-5">
+                                    <input type="text" class="form-control form-control-sm label-porcentaje"
+                                        value="Ahorro">
+                                </div>
+                                <div class="col-3">
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control valor-porcentaje" value="20"
+                                            oninput="calcularReparto()">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end fw-bold text-primary">
+                                    <span class="resultado-porcentaje">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-2 bg-white rounded-3 border d-flex justify-content-between small">
+                            <span>Restante: <strong id="repartoRestante">100%</strong></span>
+                            <strong id="montoRestante" class="text-primary">$0.00</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registro de Movimientos -->
             <div class="card mb-3 shadow-sm">
-                <div class="card-header bg-light fw-bold">📉 Calculadora de Incidencia</div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <label class="form-label">Costo Inicial ($)</label>
-                            <input type="number" class="form-control" id="costoInicial" placeholder="0.00">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">% Incidencia</label>
-                            <input type="number" class="form-control" id="porcentajeIncidencia" value="10">
-                        </div>
-                    </div>
-                    <div class="mt-2 p-2 bg-light border rounded text-center">
-                        <strong>Costo Final: <span id="costoFinalCalc">$0.00</span></strong>
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseRegistro">
+                    <span class="small fw-bold text-uppercase">➕ Registrar Movimiento</span>
+                    <i class="bi bi-plus-circle-fill text-primary"></i>
+                </div>
+                <div id="collapseRegistro" class="collapse">
+                    <div class="card-body">
+                        <form id="formFinanzas" class="row g-2 small">
+                            <div class="col-6">
+                                <select class="form-select form-select-sm" id="finTipo"
+                                    onchange="toggleCompartirDeuda()">
+                                    <option value="ingreso">Ingreso (+)</option>
+                                    <option value="egreso">Egreso (-)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="finCategoria"
+                                    placeholder="Categoría..." list="catList">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="finConcepto"
+                                    placeholder="Concepto..." required>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" step="0.01" class="form-control form-control-sm" id="finMonto"
+                                    placeholder="Monto ($)" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="date" class="form-control form-control-sm" id="finFecha" required>
+                            </div>
+                            <div class="col-12" id="divCompartirDeuda" style="display: none;">
+                                <select class="form-select form-select-sm border-primary" id="finCompartirCon">
+                                    <option value="">No compartir</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-sm w-100">Guardar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+            <!-- CIERRE Registro Movimiento Card -->
 
-            <div class="card mb-3 shadow-sm border-primary">
-                <div class="card-header bg-primary text-white fw-bold">🔵 Asistente de Compra Cashea</div>
-                <div class="card-body">
-                    <div class="row g-2 mb-3">
-                        <div class="col-12">
-                            <label class="form-label">Monto Total de la Compra ($)</label>
-                            <input type="number" class="form-control" id="casheaMontoTotal" placeholder="0.00">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Línea de Compra</label>
-                            <select class="form-select" id="casheaLinea" onchange="actualizarCuotasCashea()">
-                                <option value="cotidiana">Cotidiana (1 cuota)</option>
-                                <option value="principal" selected>Principal (Var. cuotas)</option>
-                            </select>
-                        </div>
-                        <div class="col-6" id="contenedorCuotasPrincipal">
-                            <label class="form-label">Nro. de Cuotas</label>
-                            <select class="form-select" id="casheaCuotas">
-                                <option value="3">3 Cuotas</option>
-                                <option value="6">6 Cuotas</option>
-                                <option value="9">9 Cuotas</option>
-                                <option value="12">12 Cuotas</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="resultadoCashea" class="p-2 bg-light border rounded small d-none">
-                        <div class="d-flex justify-content-between"><span>Pago Inicial (40%):</span> <strong
-                                id="casheaInicial">$0.00</strong></div>
-                        <div class="d-flex justify-content-between"><span>Monto por Cuota:</span> <strong
-                                id="casheaMontoCuota">$0.00</strong></div>
-                        <hr class="my-1">
-                        <button class="btn btn-sm btn-outline-primary w-100 mt-1" onclick="registrarCashea()">Registrar
-                            Todo en Finanzas</button>
-                    </div>
+            <!-- Asistente Cashea -->
+            <div class="card mb-3 shadow-sm border-0">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#collapseCashea">
+                    <span class="small fw-bold text-uppercase text-muted">🔵 Asistente Cashea</span>
+                    <i class="bi bi-lightning-charge-fill text-primary"></i>
                 </div>
-            </div>
-
-            <h5 class="border-bottom pb-2">Planificación de Pagos</h5>
-            <div class="alert alert-info py-2">
-                <small>💰 Disponible: <strong id="dineroDisponible">$0.00</strong> (Ingresos - Deudas)</small>
-            </div>
-
-            <ul class="list-group mb-5" id="listaFinanzas">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Tarjeta de Crédito
-                    <span class="badge bg-danger rounded-pill">-$50.00 (15/12)</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Sueldo Quincena
-                    <span class="badge bg-success rounded-pill">+$200.00</span>
-                </li>
-            </ul>
-        </div>
-
-        <div class="tab-pane fade" id="config" role="tabpanel">
-            <div class="card p-3 shadow-sm mb-3" id="seccionAdmin">
-                <h5><i class="bi bi-person-plus"></i> Registrar Usuario</h5>
-                <form id="formNuevoUsuario" class="row g-2">
-                    <div class="col-6">
-                        <input type="text" id="regNombre" class="form-control form-control-sm" placeholder="Nombre"
-                            required>
+                <div id="collapseCashea" class="collapse">
+                    <div class="card-body">
+                        <div class="row g-2 small">
+                            <div class="col-12">
+                                <input type="number" class="form-control form-control-sm" id="casheaMontoTotal"
+                                    placeholder="Monto de la Compra ($)">
+                            </div>
+                            <div class="col-6">
+                                <select class="form-select form-select-sm" id="casheaLinea"
+                                    onchange="actualizarCuotasCashea()">
+                                    <option value="cotidiana">Cotidiana</option>
+                                    <option value="principal" selected>Principal</option>
+                                </select>
+                            </div>
+                            <div class="col-6" id="contenedorCuotasPrincipal">
+                                <select class="form-select form-select-sm" id="casheaCuotas">
+                                    <option value="3">3 Cuotas</option>
+                                    <option value="6">6 Cuotas</option>
+                                    <option value="9">9 Cuotas</option>
+                                </select>
+                            </div>
+                            <div id="resultadoCashea" class="col-12 d-none">
+                                <div class="p-2 bg-primary-soft rounded-3 mt-2">
+                                    <div class="d-flex justify-content-between"><span>Inicial (40%):</span> <strong
+                                            id="casheaInicial">$0.00</strong></div>
+                                    <div class="d-flex justify-content-between"><span>Por Cuota:</span> <strong
+                                            id="casheaMontoCuota">$0.00</strong></div>
+                                    <button class="btn btn-sm btn-primary w-100 mt-2 py-1" onclick="registrarCashea()"
+                                        style="font-size: 0.75rem">Registrar Cuotas</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <input type="email" id="regEmail" class="form-control form-control-sm" placeholder="Email"
-                            required>
-                    </div>
-                    <div class="col-6">
-                        <input type="password" id="regPass" class="form-control form-control-sm"
-                            placeholder="Contraseña" required>
-                    </div>
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-success btn-sm w-100">Crear Usuario</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card p-3 shadow-sm mb-3">
-                <h5><i class="bi bi-share"></i> Privacidad de Mis Finanzas</h5>
-                <p class="small text-muted">Selecciona quién puede ver tus deudas e ingresos:</p>
-                <div id="listaUsuariosCompartir" class="list-group list-group-flush">
-                    <div class="text-center p-2">Cargando usuarios...</div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <button class="btn btn-outline-danger w-100" onclick="cerrarSesion()">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                </button>
+                <h6 class="small fw-bold text-uppercase text-muted letter-spacing-1 mb-3">Planificación de Pagos</h6>
+                <div class="alert bg-primary-soft border-0 py-2 d-flex justify-content-between align-items-center">
+                    <span class="small opacity-75">Disponible:</span>
+                    <strong class="text-primary" id="dineroDisponible">$0.00</strong>
+                </div>
+                <ul class="list-group list-group-flush mb-5" id="listaFinanzas">
+                    <!-- Dinámico -->
+                </ul>
+            </div>
+        </div> <!-- FIN FINANZAS -->
+
+        <div class="tab-pane fade" id="config" role="tabpanel">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header py-2 bg-white">
+                    <span class="small fw-bold text-uppercase text-muted"><i class="bi bi-shield-lock"></i> Seguridad y
+                        Privacidad</span>
+                </div>
+                <div class="card-body p-3">
+                    <div id="seccionAdmin" class="d-none mb-3 p-3 bg-light rounded-4 border-0">
+                        <h6 class="small fw-bold mb-3 text-primary text-uppercase">Gestión de Usuarios</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-borderless small align-middle mb-0">
+                                <tbody id="tablaUsuariosAdmin"></tbody>
+                            </table>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary w-100 py-1" style="font-size: 0.75rem"
+                            data-bs-toggle="collapse" data-bs-target="#collapseAddUser">
+                            + Registrar Nuevo Usuario
+                        </button>
+                        <div id="collapseAddUser" class="collapse mt-3">
+                            <form id="formNuevoUsuario" class="row g-1">
+                                <div class="col-6"><input type="text" id="regNombre"
+                                        class="form-control form-control-sm" placeholder="Nombre"></div>
+                                <div class="col-6"><input type="email" id="regEmail"
+                                        class="form-control form-control-sm" placeholder="Email"></div>
+                                <div class="col-6"><input type="password" id="regPass"
+                                        class="form-control form-control-sm" placeholder="Pass"></div>
+                                <div class="col-6"><button type="submit"
+                                        class="btn btn-primary btn-sm w-100">Crear</button></div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h6 class="small fw-bold mb-2 text-muted text-uppercase" style="font-size: 0.7rem">Compartir mis
+                        datos con:</h6>
+                    <div id="listaUsuariosCompartir" class="list-group list-group-flush small mb-4">
+                        <div class="text-center p-3 opacity-50">Cargando lista de usuarios...</div>
+                    </div>
+
+                    <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3" onclick="cerrarSesion()">
+                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-
-    <button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalNuevo">
-        <i class="bi bi-plus-lg"></i>
-    </button>
 
     <div class="modal fade" id="modalNuevo" tabindex="-1">
         <div class="modal-dialog">
@@ -340,6 +659,14 @@
             try {
                 const data = await llamarBackend('login', { email, password: pass });
                 if (data.success) {
+                    if (data.user.status === 'Pending') {
+                        alert("⏳ Tu cuenta aún no ha sido aprobada por un administrador.");
+                        return;
+                    }
+                    if (data.user.status === 'Disabled') {
+                        alert("🚫 Tu cuenta ha sido desactivada.");
+                        return;
+                    }
                     currentUser = data.user;
 
                     // --- PERSISTENCIA DE SESIÓN ---
@@ -356,6 +683,36 @@
             } catch (err) {
                 console.error(err);
                 alert("Error de conexión con el servidor.");
+            }
+        });
+
+        function toggleAuth(isRegister) {
+            document.getElementById('formLogin').style.display = isRegister ? 'none' : 'block';
+            document.getElementById('formRegistro').style.display = isRegister ? 'block' : 'none';
+            document.querySelector('#loginWall h3').innerText = isRegister ? 'Regístrate' : 'MarketPlanner OS';
+        }
+
+        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('regNombreSelf').value;
+            const email = document.getElementById('regEmailSelf').value;
+            const pass = document.getElementById('regPassSelf').value;
+
+            try {
+                // El backend crearUsuario debería verificar si ya existe
+                const res = await llamarBackend('crearUsuario', {
+                    payload: { nombre, email, pass, rol: 'Usuario', status: 'Pending' }
+                });
+
+                if (res.success) {
+                    alert("✅ Registro solicitado con éxito. Espera a que un administrador apruebe tu acceso.");
+                    toggleAuth(false);
+                    e.target.reset();
+                } else {
+                    alert("❌ Error: " + res.message);
+                }
+            } catch (err) {
+                alert("Error al intentar registrar.");
             }
         });
 
@@ -398,11 +755,69 @@
                 renderizarProductos(data.products);
                 renderizarFinanzas(data.finanzas);
 
-                // Nuevas funciones integradas
                 verificarNotificaciones(data.finanzas);
                 cargarListaCompartir();
+                populateSharedWith();
+
+                // Mostrar sección admin si aplica
+                if (currentUser.rol === 'Admin') {
+                    document.getElementById('seccionAdmin').classList.remove('d-none');
+                    cargarUsuariosAdmin();
+                }
             } catch (err) {
                 console.error("Error al cargar datos:", err);
+            }
+        }
+
+        async function cargarUsuariosAdmin() {
+            const res = await llamarBackend('getAllUsers'); // Usamos el mismo endpoint pero adaptamos vista
+            const tabla = document.getElementById('tablaUsuariosAdmin');
+            if (!tabla) return;
+            tabla.innerHTML = "";
+
+            if (res.usuarios) {
+                res.usuarios.forEach(u => {
+                    const isPending = u.status === 'Pending';
+                    const isDisabled = u.status === 'Disabled';
+
+                    tabla.innerHTML += `
+                                <tr>
+                                    <td>${u.nombre}<br><small class="text-muted">${u.email}</small></td>
+                                    <td>
+                                        <span class="badge ${isPending ? 'bg-warning text-dark' : (isDisabled ? 'bg-danger' : 'bg-success')}">
+                                            ${u.status || 'Active'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            ${isPending ?
+                            `<button class="btn btn-sm btn-success p-1" onclick="cambiarStatus(${u.id}, 'Active')"><i class="bi bi-check-lg"></i></button>` :
+                            `<button class="btn btn-sm btn-outline-danger p-1" onclick="cambiarStatus(${u.id}, 'Disabled')"><i class="bi bi-slash-circle"></i></button>`
+                        }
+                                            <button class="btn btn-sm btn-danger p-1" onclick="eliminarUsuario(${u.id})"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                });
+            }
+        }
+
+        async function cambiarStatus(targetId, status) {
+            if (!confirm(`¿Cambiar estado a ${status}?`)) return;
+            const res = await llamarBackend('updateUserStatus', { targetUserId: targetId, status, adminId: currentUser.id });
+            if (res.success) {
+                alert("Estado actualizado");
+                cargarUsuariosAdmin();
+            }
+        }
+
+        async function eliminarUsuario(targetId) {
+            if (!confirm("⚠️ ¿Seguro que deseas eliminar este usuario?")) return;
+            const res = await llamarBackend('deleteUser', { targetUserId: targetId, adminId: currentUser.id });
+            if (res.success) {
+                alert("Usuario eliminado");
+                cargarUsuariosAdmin();
             }
         }
 
@@ -448,8 +863,57 @@
             document.getElementById('totalGeneralBS').innerText = `Bs ${(totalUSD * tasaBCV).toFixed(2)}`;
         }
 
-        // Evento de búsqueda
-        document.getElementById('buscador').addEventListener('input', () => renderizarProductos(productosCache));
+        // Evento de búsqueda con sugerencias
+        const buscador = document.getElementById('buscador');
+        const sugerenciasContenedor = document.getElementById('sugerenciasBusqueda');
+
+        buscador.addEventListener('input', () => {
+            const termino = buscador.value.toLowerCase().trim();
+
+            if (termino.length < 2) {
+                sugerenciasContenedor.style.display = 'none';
+                renderizarProductos(productosCache);
+                return;
+            }
+
+            // Filtrar productos que coincidan para las sugerencias
+            const coincidencias = productosCache.filter(p =>
+                p[1].toLowerCase().includes(termino) || p[4].toLowerCase().includes(termino)
+            ).sort((a, b) => a[3] - b[3]); // Ordenar por precio para destacar el más económico
+
+            if (coincidencias.length > 0) {
+                sugerenciasContenedor.innerHTML = coincidencias.map(p => `
+                    <div class="suggestion-item d-flex justify-content-between align-items-center" onclick="seleccionarSugerencia('${p[1]}')">
+                        <div>
+                            <div class="fw-bold">${p[1]}</div>
+                            <small class="text-muted"><i class="bi bi-shop"></i> ${p[4]}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="suggestion-price">$${p[3].toFixed(2)}</span><br>
+                            <small class="text-muted" style="font-size: 0.75rem;">Bs ${(p[3] * tasaBCV).toFixed(2)}</small>
+                        </div>
+                    </div>
+                `).join('');
+                sugerenciasContenedor.style.display = 'block';
+            } else {
+                sugerenciasContenedor.style.display = 'none';
+            }
+
+            renderizarProductos(productosCache);
+        });
+
+        function seleccionarSugerencia(nombre) {
+            buscador.value = nombre;
+            sugerenciasContenedor.style.display = 'none';
+            renderizarProductos(productosCache);
+        }
+
+        // Cerrar sugerencias al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!buscador.contains(e.target) && !sugerenciasContenedor.contains(e.target)) {
+                sugerenciasContenedor.style.display = 'none';
+            }
+        });
 
         // --- MANEJO DE FORMULARIO DE PRODUCTO ---
         document.getElementById('formProducto').addEventListener('submit', async (e) => {
@@ -622,7 +1086,14 @@
 
             // 1. Registrar pago inicial (hoy)
             await llamarBackend('saveFinance', {
-                payload: { tipo: 'egreso', nombre: 'Cashea - Inicial', monto: inicial, fecha: new Date().toISOString(), ownerId: currentUser.id }
+                payload: {
+                    tipo: 'egreso',
+                    nombre: 'Cashea - Inicial',
+                    monto: inicial,
+                    fecha: new Date().toISOString(),
+                    ownerId: currentUser.id,
+                    sharedWith: document.getElementById('finCompartirCon').value || null
+                }
             });
 
             // 2. Registrar cuotas futuras
@@ -637,7 +1108,8 @@
                         nombre: `Cashea - Cuota ${i}/${nCuotas} (${linea})`,
                         monto: montoCuota,
                         fecha: fechaCuota.toISOString(),
-                        ownerId: currentUser.id
+                        ownerId: currentUser.id,
+                        sharedWith: document.getElementById('finCompartirCon').value || null
                     }
                 });
             }
@@ -646,17 +1118,82 @@
             cargarDatosIniciales();
         }
 
-        // --- CALCULADORA DE INCIDENCIA (TIEMPO REAL) ---
-        const inputCosto = document.getElementById('costoInicial');
-        const inputIncid = document.getElementById('porcentajeIncidencia');
+        // --- CALCULADORA DE REPARTO POR PORCENTAJES ---
+        function agregarFilaPorcentaje() {
+            const contenedor = document.getElementById('filasPorcentajes');
+            const div = document.createElement('div');
+            div.className = 'row g-2 mb-2 align-items-center';
+            div.innerHTML = `
+                <div class="col-5">
+                    <input type="text" class="form-control form-control-sm label-porcentaje" placeholder="Etiqueta">
+                </div>
+                <div class="col-3">
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="form-control valor-porcentaje" value="0" oninput="calcularReparto()">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+                <div class="col-4 text-end d-flex align-items-center justify-content-end">
+                    <strong class="resultado-porcentaje me-2">$0.00</strong>
+                    <button class="btn btn-sm btn-outline-danger border-0 py-0 px-1" onclick="this.parentElement.parentElement.remove(); calcularReparto()">&times;</button>
+                </div>
+            `;
+            contenedor.appendChild(div);
+            calcularReparto();
+        }
 
-        [inputCosto, inputIncid].forEach(el => {
-            el.addEventListener('input', () => {
-                const costo = parseFloat(inputCosto.value) || 0;
-                const porc = parseFloat(inputIncid.value) || 0;
-                const total = costo + (costo * (porc / 100));
-                document.getElementById('costoFinalCalc').innerText = `$${total.toFixed(2)} | Bs ${(total * tasaBCV).toFixed(2)}`;
+        function calcularReparto() {
+            const monto = parseFloat(document.getElementById('montoReparto').value) || 0;
+            const filas = document.querySelectorAll('#filasPorcentajes .row');
+            let porcetajeTotal = 0;
+
+            filas.forEach(fila => {
+                const porc = parseFloat(fila.querySelector('.valor-porcentaje').value) || 0;
+                porcetajeTotal += porc;
+                const subtotal = monto * (porc / 100);
+                fila.querySelector('.resultado-porcentaje').innerText = `$${subtotal.toFixed(2)}`;
             });
+
+            const restPorc = 100 - porcetajeTotal;
+            const restMonto = monto * (restPorc / 100);
+
+            const displayRestPorc = document.getElementById('repartoRestante');
+            displayRestPorc.innerText = `${restPorc}%`;
+            displayRestPorc.className = restPorc < 0 ? 'text-danger' : 'text-dark';
+
+            document.getElementById('montoRestante').innerText = `$${restMonto.toFixed(2)}`;
+        }
+
+        // --- MANEJO DE FORMULARIO DE FINANZAS ---
+        document.getElementById('formFinanzas').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tipo = document.getElementById('finTipo').value;
+            const cat = document.getElementById('finCategoria').value;
+            const conc = document.getElementById('finConcepto').value;
+            const monto = parseFloat(document.getElementById('finMonto').value);
+            const fecha = document.getElementById('finFecha').value;
+
+            const payload = {
+                tipo,
+                nombre: `${cat ? '[' + cat + '] ' : ''}${conc}`,
+                monto,
+                fecha: new Date(fecha).toISOString(),
+                ownerId: currentUser.id,
+                sharedWith: document.getElementById('finCompartirCon').value || null
+            };
+
+            try {
+                const res = await llamarBackend('saveFinance', { payload });
+                if (res.success) {
+                    alert("Movimiento registrado");
+                    e.target.reset();
+                    cargarDatosIniciales();
+                } else {
+                    alert("Error: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+            }
         });
 
         function renderizarFinanzas(finanzas) {
@@ -667,26 +1204,45 @@
             let totalIngresos = 0;
             let totalDeudas = 0;
 
-            // Ordenar por fecha (asumiendo que la fecha es la columna D, índice 3)
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            // Ordenar por fecha
             finanzas.sort((a, b) => new Date(a[3]) - new Date(b[3]));
 
             finanzas.forEach(f => {
                 const monto = parseFloat(f[2]);
                 const esIngreso = f[0].toLowerCase() === 'ingreso';
-                const fechaFormateada = f[3] ? new Date(f[3]).toLocaleDateString() : 'S/F';
+                const fechaVence = new Date(f[3]);
+                const fechaFormateada = f[3] ? fechaVence.toLocaleDateString() : 'S/F';
 
                 if (esIngreso) totalIngresos += monto;
                 else totalDeudas += monto;
 
+                // Sugerencia: Estado visual (Vencido, Próximo, Pagado)
+                let estadoBadge = "";
+                if (!esIngreso) {
+                    if (fechaVence < hoy) estadoBadge = '<span class="badge bg-danger ms-1">Vencido</span>';
+                    else if ((fechaVence - hoy) / (1000 * 60 * 60 * 24) <= 3) estadoBadge = '<span class="badge bg-warning text-dark ms-1">Pronto</span>';
+
+                    // Indicador de compartido
+                    if (f[5] || f.shared) { // f[5] es donde solemos poner el sharedWith en arrays
+                        estadoBadge += ' <span class="badge bg-info ms-1"><i class="bi bi-people-fill"></i> Compartido</span>';
+                    }
+                }
+
                 lista.innerHTML += `
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>${f[1]}</strong><br>
+                            <strong>${f[1]}</strong> ${estadoBadge}<br>
                             <small class="text-muted"><i class="bi bi-calendar"></i> ${fechaFormateada}</small>
                         </div>
-                        <span class="badge ${esIngreso ? 'bg-success' : 'bg-danger'} rounded-pill">
-                            ${esIngreso ? '+' : '-'}$${monto.toFixed(2)}
-                        </span>
+                        <div class="text-end">
+                            <span class="fw-bold ${esIngreso ? 'text-success' : 'text-danger'}">
+                                ${esIngreso ? '+' : '-'}$${monto.toFixed(2)}
+                            </span><br>
+                            <small class="text-muted" style="font-size: 0.75rem;">Bs ${(monto * tasaBCV).toFixed(2)}</small>
+                        </div>
                     </li>
                 `;
             });
@@ -711,8 +1267,36 @@
                 alert("Usuario creado con éxito");
                 e.target.reset();
                 cargarListaCompartir(); // Refrescar lista
+                populateSharedWith(); // Refrescar dropdown
             }
         });
+
+        async function populateSharedWith() {
+            try {
+                const data = await llamarBackend('getAllUsers');
+                const select = document.getElementById('finCompartirCon');
+                if (!select) return;
+
+                const currentVal = select.value;
+                select.innerHTML = '<option value="">No compartir</option>';
+
+                if (data.usuarios) {
+                    data.usuarios.forEach(u => {
+                        if (u.id == currentUser.id) return;
+                        if (u.status && u.status !== 'Active' && u.status !== '') return;
+                        select.innerHTML += `<option value="${u.id}">${u.nombre}</option>`;
+                    });
+                }
+                select.value = currentVal;
+            } catch (err) { console.warn(err); }
+        }
+
+        function toggleCompartirDeuda() {
+            const tipo = document.getElementById('finTipo').value;
+            const div = document.getElementById('divCompartirDeuda');
+            div.style.display = tipo === 'egreso' ? 'block' : 'none';
+            if (tipo === 'egreso') populateSharedWith();
+        }
 
         // --- CARGAR OTROS USUARIOS PARA COMPARTIR ---
         async function cargarListaCompartir() {
@@ -724,6 +1308,7 @@
                 if (data.usuarios) {
                     data.usuarios.forEach(u => {
                         if (u.id == currentUser.id) return;
+                        if (u.status && u.status !== 'Active' && u.status !== '') return;
 
                         contenedor.innerHTML += `
                             <div class="list-group-item d-flex justify-content-between align-items-center">
@@ -794,7 +1379,15 @@
                 location.reload();
             }
         }
-
+    </script>
+    <script>
+        // --- SYNC DARK MODE ATTRIBUTE ---
+        function syncDarkMode() {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncDarkMode);
+        syncDarkMode();
     </script>
 </body>
 
