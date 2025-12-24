@@ -275,8 +275,227 @@
             z-index: 2050 !important;
         }
 
-        #modalScanner~.modal-backdrop {
-            z-index: 2040 !important;
+        /* ===== CALENDAR & PRODUCTS STYLES ===== */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .calendar-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e0e0e0;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .calendar-day-header {
+            background: #f5f5f5;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 0.5rem;
+            min-height: 70px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+            background: #fafafa;
+        }
+
+        .calendar-day.today {
+            background: #e3f2fd;
+            font-weight: bold;
+            border: 2px solid #2196f3;
+        }
+
+        .calendar-day-number {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .event-dots {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .event-dot.income {
+            background: #4caf50;
+        }
+
+        .event-dot.expense {
+            background: #f44336;
+        }
+
+        .event-dot.recurring {
+            background: #ff9800;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .product-card.in-list {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .product-image-placeholder {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-market {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            margin-bottom: 0.75rem;
+        }
+
+        .product-price strong {
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .badge-in-list {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #4caf50;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .list-item:hover {
+            background: #f8f9fa;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .item-quantity input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-day {
+                min-height: 60px;
+                font-size: 0.85rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -350,6 +569,11 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒
                 Lista</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos"
+                type="button">🏪
+                Productos</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button">💰
@@ -542,8 +766,25 @@
                     <span class="small opacity-75">Disponible:</span>
                     <strong class="text-primary" id="dineroDisponible">$0.00</strong>
                 </div>
+
+                <!-- Calendario de Pagos -->
+                <div class="card shadow-sm mb-3">
+                    <div class="calendar-header">
+                        <button class="btn btn-sm btn-light" onclick="previousMonth()">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <div class="calendar-title" id="calendarTitle">Enero 2024</div>
+                        <button class="btn btn-sm btn-light" onclick="nextMonth()">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                </div>
+
                 <ul class="list-group list-group-flush mb-5" id="listaFinanzas">
-                    <!-- Dinámico -->
+                    <!-- Din ámico -->
                 </ul>
             </div>
 
@@ -727,6 +968,105 @@
             </div>
 
         </div> <!-- FIN FINANZAS -->
+
+        <!-- PRODUCTOS TAB -->
+        <div class="tab-pane fade" id="productos" role="tabpanel">
+
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body p-2">
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" id="searchProductCatalog"
+                                    placeholder="Buscar producto...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select form-select-sm" id="filterMercado">
+                                <option value="">Todos los mercados</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-sm btn-outline-secondary w-100" onclick="clearProductFilters()">
+                                <i class="bi bi-x-circle"></i> Limpiar filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout principal: Grid productos + Lista de compra -->
+            <div class="row">
+                <!-- Grid de Productos -->
+                <div class="col-lg-8 col-md-7">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-grid-3x3-gap"></i> Catálogo de Productos</h6>
+                        <span class="badge bg-primary" id="catalogCount">0 productos</span>
+                    </div>
+                    <div id="productsGrid" class="products-grid">
+                        <!-- Cards generadas dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Lista de Compra -->
+                <div class="col-lg-4 col-md-5">
+                    <div class="shopping-list-container sticky-top" style="top: 20px;">
+                        <div class="card shadow-sm">
+                            <div
+                                class="card-header bg-primary text-white py-2 d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-cart-check"></i> Mi Lista de Compra</span>
+                                <span class="badge bg-white text-primary" id="listCountBadge">0</span>
+                            </div>
+                            <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
+                                <div id="shoppingListItems">
+                                    <p class="text-muted text-center small my-4">
+                                        <i class="bi bi-cart-x fs-3 d-block mb-2"></i>
+                                        Tu lista está vacía
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>Total estimado:</strong>
+                                    <div class="text-end">
+                                        <div class="text-primary fw-bold" id="listTotalUSD">$0.00</div>
+                                        <small class="text-muted" id="listTotalBS">Bs 0.00</small>
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-1">
+                                    <button class="btn btn-sm btn-success" onclick="exportShoppingList()"
+                                        id="btnExportList" disabled>
+                                        <i class="bi bi-share"></i> Compartir Lista
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="clearShoppingList()">
+                                        <i class="bi bi-trash"></i> Limpiar Lista
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historial de listas -->
+                        <div class="card shadow-sm mt-3">
+                            <div class="card-header py-2" style="cursor: pointer;" data-bs-toggle="collapse"
+                                data-bs-target="#collapseHistory">
+                                <small class="fw-bold"><i class="bi bi-clock-history"></i> Historial de Listas</small>
+                            </div>
+                            <div class="collapse" id="collapseHistory">
+                                <div class="card-body p-2" style="max-height: 200px; overflow-y: auto;">
+                                    <div id="listHistory" class="small">
+                                        <p class="text-muted text-center my-2">Sin historial</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- FIN PRODUCTOS -->
 
         <div class="tab-pane fade" id="config" role="tabpanel">
             <div class="card shadow-sm border-0 mb-4">
@@ -2575,6 +2915,535 @@
             cargarDashboard();
 
             alert('✅ Datos de demostración generados!\n\n🔁 3 gastos recurrentes\n📊 2 categorías de gastos variables\n💰 3 transacciones de ahorro');
+        };
+
+        // ==================== CALENDARIO DE PAGOS ====================
+
+        let currentCalendarDate = new Date();
+        let calendarEvents = [];
+
+        function renderCalendar(year, month) {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const prevLastDay = new Date(year, month, 0);
+
+            const firstDayIndex = firstDay.getDay();
+            const lastDateMonth = lastDay.getDate();
+            const prevLastDate = prevLastDay.getDate();
+
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+            document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+
+            let html = '';
+
+            // Headers de días
+            dayNames.forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+
+            // Días del mes anterior
+            for (let i = firstDayIndex; i > 0; i--) {
+                html += `<div class="calendar-day other-month">
+                    <div class="calendar-day-number">${prevLastDate - i + 1}</div>
+                </div>`;
+            }
+
+            // Días del mes actual
+            const today = new Date();
+            for (let day = 1; day <= lastDateMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                const events = calendarEvents.filter(e => e.date === dateStr);
+
+                html += `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="showEventDetails('${dateStr}')">
+                    <div class="calendar-day-number">${day}</div>
+                    <div class="event-dots">`;
+
+                events.forEach(event => {
+                    html += `<span class="event-dot ${event.type}" title="${event.title}"></span>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            // Días del próximo mes
+            const nextDays = 42 - (firstDayIndex + lastDateMonth);
+            for (let day = 1; day <= nextDays; day++) {
+                html += `<div class="calendar-day other-month">
+                    <div class="calendar-day-number">${day}</div>
+                </div>`;
+            }
+
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+        }
+
+        function loadCalendarEvents() {
+            calendarEvents = [];
+
+            // Agregar finanzas regulares
+            const finanzas = JSON.parse(localStorage.getItem('finanzas_' + currentUser?.id) || '[]');
+            finanzas.forEach(f => {
+                if (f[3]) {
+                    const fecha = f[3].split('T')[0];
+                    calendarEvents.push({
+                        date: fecha,
+                        type: f[0].toLowerCase() === 'ingreso' ? 'income' : 'expense',
+                        title: f[1],
+                        amount: f[2]
+                    });
+                }
+            });
+
+            // Agregar gastos recurrentes
+            if (gastosRecurrentes && gastosRecurrentes.length > 0) {
+                gastosRecurrentes.forEach(g => {
+                    calendarEvents.push({
+                        date: g.proximoPago,
+                        type: 'recurring',
+                        title: g.nombre,
+                        amount: g.monto
+                    });
+                });
+            }
+
+            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+        }
+
+        function showEventDetails(dateStr) {
+            const events = calendarEvents.filter(e => e.date === dateStr);
+            if (events.length === 0) return;
+
+            let html = '<div style="padding: 1rem;">';
+            html += `<h6 class="mb-3">Eventos del ${dateStr}</h6>`;
+
+            events.forEach(event => {
+                const color = event.type === 'income' ? '#4caf50' : event.type === 'expense' ? '#f44336' : '#ff9800';
+                html += `<div class="mb-2 p-2 border-start border-3" style="border-color: ${color} !important;">
+                    <strong>${event.title}</strong><br>
+                    <small class="text-muted">${event.type === 'income' ? 'Ingreso' : event.type === 'recurring' ? 'Gasto Recurrente' : 'Egreso'}</small><br>
+                    <span class="fw-bold" style="color: ${color};">$${parseFloat(event.amount).toFixed(2)}</span>
+                </div>`;
+            });
+
+            html += '</div>';
+
+            // Mostrar en un modal simple
+            if (confirm(`${events.length} evento(s) para ${dateStr}\n\nVer detalles?`)) {
+                alert(events.map(e => `${e.title}: $${e.amount}`).join('\n'));
+            }
+        }
+
+        // ==================== CATÁLOGO DE PRODUCTOS ====================
+
+        let allProducts = [];
+        let shoppingList = [];
+        let listHistory = [];
+
+        async function loadProductsCatalog() {
+            try {
+                const res = await llamarBackend('getInitialData', { userId: currentUser.id });
+                if (res.success && res.products) {
+                    allProducts = res.products;
+                    renderProductsCatalog(allProducts);
+                    loadMercadoFilter();
+                    document.getElementById('catalogCount').textContent = `${allProducts.length} productos`;
+                }
+            } catch (err) {
+                console.error('Error cargando catálogo:', err);
+            }
+
+            // Cargar lista de compra
+            loadShoppingList();
+            loadListHistory();
+        }
+
+        function renderProductsCatalog(products) {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+
+            if (products.length === 0) {
+                grid.innerHTML = '<p class="text-muted text-center col-span-full">No hay productos disponibles</p>';
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const inList = shoppingList.some(item => item.productId === p[0]);
+                return `
+                    <div class="product-card ${inList ? 'in-list' : ''}" data-id="${p[0]}">
+                        ${inList ? '<span class="badge-in-list"><i class="bi bi-check-circle"></i> En lista</span>' : ''}
+                        <div class="product-image-placeholder">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">${p[1]}</div>
+                            <div class="product-market">
+                                <i class="bi bi-shop"></i> ${p[4]}
+                            </div>
+                            <div class="product-price">
+                                <strong>$${parseFloat(p[3]).toFixed(2)}</strong><br>
+                                <small class="text-muted">Bs ${(parseFloat(p[3]) * tasaBCV).toFixed(2)}</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-primary w-100 add-to-list-btn" onclick="addToShoppingList('${p[0]}')" ${inList ? 'disabled' : ''}>
+                            <i class="bi bi-cart-plus"></i> ${inList ? 'En lista' : 'Agregar'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadMercadoFilter() {
+            const mercados = [...new Set(allProducts.map(p => p[4]))];
+            const select = document.getElementById('filterMercado');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">Todos los mercados</option>' +
+                mercados.map(m => `<option value="${m}">${m}</option>`).join('');
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchProductCatalog')?.value.toLowerCase() || '';
+            const mercado = document.getElementById('filterMercado')?.value || '';
+
+            const filtered = allProducts.filter(p => {
+                const matchSearch = p[1].toLowerCase().includes(searchTerm);
+                const matchMercado = !mercado || p[4] === mercado;
+                return matchSearch && matchMercado;
+            });
+
+            renderProductsCatalog(filtered);
+            document.getElementById('catalogCount').textContent = `${filtered.length} productos`;
+        }
+
+        function clearProductFilters() {
+            document.getElementById('searchProductCatalog').value = '';
+            document.getElementById('filterMercado').value = '';
+            filterProducts();
+        }
+
+        // Event listeners para filtros
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchProductCatalog');
+            const mercadoSelect = document.getElementById('filterMercado');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterProducts);
+            }
+
+            if (mercadoSelect) {
+                mercadoSelect.addEventListener('change', filterProducts);
+            }
+        });
+
+        // ==================== LISTA DE COMPRA ====================
+
+        function addToShoppingList(productId) {
+            const product = allProducts.find(p => p[0] == productId);
+            if (!product) return;
+
+            if (shoppingList.some(item => item.productId == productId)) {
+                showToast('Producto ya está en la lista', 'info');
+                return;
+            }
+
+            shoppingList.push({
+                productId: product[0],
+                nombre: product[1],
+                mercado: product[4],
+                precio: parseFloat(product[3]),
+                quantity: 1
+            });
+
+            saveShoppingList();
+            renderShoppingList();
+            filterProducts(); // Re-render para actualizar badges
+            showToast(`${product[1]} agregado a la lista`, 'success');
+        }
+
+        function removeFromShoppingList(productId) {
+            shoppingList = shoppingList.filter(item => item.productId != productId);
+            saveShoppingList();
+            renderShoppingList();
+            filterProducts();
+            showToast('Producto eliminado de la lista', 'info');
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            const item = shoppingList.find(i => i.productId == productId);
+            if (item && newQuantity > 0) {
+                item.quantity = parseInt(newQuantity);
+                saveShoppingList();
+                renderShoppingList();
+            }
+        }
+
+        function incrementQuantity(productId) {
+            const item = shoppingList.find(i => i.productId == productId);
+            if (item) {
+                item.quantity++;
+                saveShoppingList();
+                renderShoppingList();
+            }
+        }
+
+        function decrementQuantity(productId) {
+            const item = shoppingList.find(i => i.productId == productId);
+            if (item && item.quantity > 1) {
+                item.quantity--;
+                saveShoppingList();
+                renderShoppingList();
+            }
+        }
+
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingListItems');
+            if (!container) return;
+
+            if (shoppingList.length === 0) {
+                container.innerHTML = `
+                    <p class="text-muted text-center small my-4">
+                        <i class="bi bi-cart-x fs-3 d-block mb-2"></i>
+                        Tu lista está vacía
+                    </p>
+                `;
+                document.getElementById('listCountBadge').textContent = '0';
+                document.getElementById('listTotalUSD').textContent = '$0.00';
+                document.getElementById('listTotalBS').textContent = 'Bs 0.00';
+                document.getElementById('btnExportList').disabled = true;
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = shoppingList.map(item => {
+                const subtotal = item.precio * item.quantity;
+                total += subtotal;
+
+                return `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <strong>${item.nombre}</strong>
+                            <small class="text-muted d-block">${item.mercado}</small>
+                            <small class="text-primary">$${item.precio.toFixed(2)} c/u</small>
+                        </div>
+                        <div class="item-quantity">
+                            <button class="qty-btn" onclick="decrementQuantity('${item.productId}')">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <input type="number" value="${item.quantity}" min="1" 
+                                onchange="updateQuantity('${item.productId}', this.value)">
+                            <button class="qty-btn" onclick="incrementQuantity('${item.productId}')">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                        <div class="item-price">$${subtotal.toFixed(2)}</div>
+                        <button class="btn-remove-item" onclick="removeFromShoppingList('${item.productId}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('listCountBadge').textContent = shoppingList.length;
+            document.getElementById('listTotalUSD').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('listTotalBS').textContent = `Bs ${(total * tasaBCV).toFixed(2)}`;
+            document.getElementById('btnExportList').disabled = false;
+        }
+
+        function saveShoppingList() {
+            if (currentUser) {
+                localStorage.setItem('shoppingList_' + currentUser.id, JSON.stringify(shoppingList));
+            }
+        }
+
+        function loadShoppingList() {
+            if (currentUser) {
+                const stored = localStorage.getItem('shoppingList_' + currentUser.id);
+                shoppingList = stored ? JSON.parse(stored) : [];
+                renderShoppingList();
+            }
+        }
+
+        function clearShoppingList() {
+            if (shoppingList.length === 0) return;
+
+            if (confirm(`¿Limpiar toda la lista de compra (${shoppingList.length} productos)?`)) {
+                // Guardar en historial antes de limpiar
+                saveToHistory();
+                shoppingList = [];
+                saveShoppingList();
+                renderShoppingList();
+                filterProducts();
+                showToast('Lista de compra limpiada', 'success');
+            }
+        }
+
+        // ==================== FUNCIONALIDADES OPCIONALES ====================
+
+        // Exportar/Compartir lista
+        function exportShoppingList() {
+            if (shoppingList.length === 0) return;
+
+            let total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+
+            let text = `🛒 LISTA DE COMPRA - MarketPlanner\n`;
+            text += `Fecha: ${new Date().toLocaleDateString()}\n`;
+            text += `\n`;
+
+            shoppingList.forEach(item => {
+                text += `• ${item.nombre} (${item.quantity}x) - $${(item.precio * item.quantity).toFixed(2)}\n`;
+                text += `  ${item.mercado}\n`;
+            });
+
+            text += `\n💰 TOTAL: $${total.toFixed(2)} (Bs ${(total * tasaBCV).toFixed(2)})`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi Lista de Compra',
+                    text: text
+                }).then(() => {
+                    showToast('Lista compartida exitosamente', 'success');
+                }).catch(err => {
+                    console.log('Error sharing:', err);
+                    copyToClipboard(text);
+                });
+            } else {
+                copyToClipboard(text);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('Lista copiada al portapapeles', 'success');
+        }
+
+        // Historial de listas
+        function saveToHistory() {
+            if (shoppingList.length === 0) return;
+
+            const total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+
+            listHistory.unshift({
+                id: Date.now(),
+                date: new Date().toISOString(),
+                items: [...shoppingList],
+                total: total,
+                count: shoppingList.length
+            });
+
+            // Mantener solo últimas 10 listas
+            if (listHistory.length > 10) {
+                listHistory = listHistory.slice(0, 10);
+            }
+
+            if (currentUser) {
+                localStorage.setItem('listHistory_' + currentUser.id, JSON.stringify(listHistory));
+            }
+
+            renderListHistory();
+        }
+
+        function loadListHistory() {
+            if (currentUser) {
+                const stored = localStorage.getItem('listHistory_' + currentUser.id);
+                listHistory = stored ? JSON.parse(stored) : [];
+                renderListHistory();
+            }
+        }
+
+        function renderListHistory() {
+            const container = document.getElementById('listHistory');
+            if (!container) return;
+
+            if (listHistory.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center my-2">Sin historial</p>';
+                return;
+            }
+
+            container.innerHTML = listHistory.map(list => {
+                const date = new Date(list.date).toLocaleDateString();
+                return `
+                    <div class="history-item" onclick="loadHistoryList('${list.id}')">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${date}</strong>
+                                <br><small class="text-muted">${list.count} productos</small>
+                            </div>
+                            <div class="text-end">
+                                <strong class="text-primary">$${list.total.toFixed(2)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadHistoryList(listId) {
+            const list = listHistory.find(l => l.id == listId);
+            if (!list) return;
+
+            if (confirm(`¿Cargar lista del ${new Date(list.date).toLocaleDateString()}?\n${list.count} productos - $${list.total.toFixed(2)}`)) {
+                shoppingList = [...list.items];
+                saveShoppingList();
+                renderShoppingList();
+                filterProducts();
+                showToast('Lista del historial cargada', 'success');
+            }
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            toast.innerHTML = `
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ==================== INICIALIZATION ====================
+
+        // Extender cargarDatosIniciales para incluir calendario y productos
+        const originalCargarDatosIniciales = cargarDatosIniciales;
+        cargarDatosIniciales = async function () {
+            await originalCargarDatosIniciales();
+            if (currentUser) {
+                loadCalendarEvents();
+                loadProductsCatalog();
+            }
         };
 
         // ==================== FIN NUEVAS FUNCIONALIDADES ====================
