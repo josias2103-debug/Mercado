@@ -33,482 +33,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        :root {
-            --primary: #0066ff;
-            --primary-soft: #eef5ff;
-            --bg: #f5f7fb;
-            --card-bg: #ffffff;
-            --text-main: #1a1d23;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #0f172a;
-                --card-bg: #1e293b;
-                --text-main: #f8fafc;
-                --text-muted: #94a3b8;
-                --border: #334155;
-                --primary-soft: #1e3a8a;
-            }
-
-            body {
-                color-scheme: dark;
-            }
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: var(--transition);
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Minimalist Navbar and Tabs */
-        .navbar {
-            background: var(--card-bg) !important;
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-        }
-
-        .navbar-brand {
-            color: var(--primary) !important;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-tabs {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 0 0.5rem;
-            gap: 1rem;
-        }
-
-        .nav-link {
-            border: none !important;
-            color: var(--text-muted) !important;
-            font-weight: 500;
-            font-size: 0.9rem;
-            padding: 1rem 0.5rem !important;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .nav-link.active {
-            background: none !important;
-            color: var(--primary) !important;
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px 3px 0 0;
-        }
-
-        /* Modern Cards */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background: transparent;
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .card-body {
-            padding: 1.25rem;
-        }
-
-        .card-resumen {
-            background: linear-gradient(135deg, var(--primary), #0052cc);
-            border: none;
-            color: white;
-        }
-
-        .card-resumen .text-primary,
-        .card-resumen .text-muted {
-            color: white !important;
-            opacity: 0.9;
-        }
-
-        /* Floating Action Button */
-        .fab {
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 14px 0 rgba(0, 102, 255, 0.39);
-            transition: var(--transition);
-            z-index: 1000;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-            background: #0052cc;
-        }
-
-        /* Modern Forms */
-        .form-control,
-        .form-select {
-            background-color: var(--bg);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            padding: 0.75rem 1rem;
-            transition: var(--transition);
-        }
-
-        .form-control:focus {
-            background-color: var(--card-bg);
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-soft);
-        }
-
-        /* List Items */
-        .list-group-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md) !important;
-            margin-bottom: 0.5rem;
-            padding: 1rem;
-            transition: var(--transition);
-        }
-
-        .list-group-item:hover {
-            border-color: var(--primary);
-        }
-
-        /* Badges */
-        .badge {
-            padding: 0.5em 0.8em;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        /* Login Wall */
-        #loginWall {
-            background: var(--bg) !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #loginWall .card {
-            width: 100%;
-            max-width: 400px;
-            border: none;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Search Suggestions */
-        .search-suggestions {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 var(--radius-md) var(--radius-md);
-            box-shadow: var(--shadow);
-            z-index: 1050;
-        }
-
-        .suggestion-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .suggestion-item:hover {
-            background: var(--bg);
-        }
-
-        /* Transitions for interactive elements */
-        .btn {
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            padding: 0.6rem 1.2rem;
-            transition: var(--transition);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background: #0052cc;
-            transform: translateY(-1px);
-        }
-
-        /* Adjustments for dark mode aesthetics */
-        [data-bs-theme="dark"] .bg-light {
-            background-color: var(--bg) !important;
-        }
-
-        [data-bs-theme="dark"] .text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        /* Scanner Overlay prominence */
-        #modalScanner {
-            z-index: 2050 !important;
-        }
-
-        /* ===== CALENDAR & PRODUCTS STYLES ===== */
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .calendar-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #e0e0e0;
-            border-radius: 0 0 12px 12px;
-            overflow: hidden;
-        }
-
-        .calendar-day-header {
-            background: #f5f5f5;
-            padding: 0.5rem;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #666;
-        }
-
-        .calendar-day {
-            background: white;
-            padding: 0.5rem;
-            min-height: 70px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .calendar-day:hover {
-            background: #f8f9fa;
-        }
-
-        .calendar-day.other-month {
-            color: #ccc;
-            background: #fafafa;
-        }
-
-        .calendar-day.today {
-            background: #e3f2fd;
-            font-weight: bold;
-            border: 2px solid #2196f3;
-        }
-
-        .calendar-day-number {
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .event-dots {
-            display: flex;
-            gap: 3px;
-            flex-wrap: wrap;
-        }
-
-        .event-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .event-dot.income {
-            background: #4caf50;
-        }
-
-        .event-dot.expense {
-            background: #f44336;
-        }
-
-        .event-dot.recurring {
-            background: #ff9800;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            position: relative;
-            border: 2px solid transparent;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-            border-color: #667eea;
-        }
-
-        .product-card.in-list {
-            border-color: #4caf50;
-            background: #f1f8f4;
-        }
-
-        .product-image-placeholder {
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: #667eea;
-            margin-bottom: 0.75rem;
-        }
-
-        .product-name {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        .product-market {
-            font-size: 0.75rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-price {
-            margin-bottom: 0.75rem;
-        }
-
-        .product-price strong {
-            font-size: 1.1rem;
-            color: #667eea;
-        }
-
-        .badge-in-list {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #4caf50;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .list-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .list-item:hover {
-            background: #f8f9fa;
-        }
-
-        .item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .qty-btn {
-            width: 24px;
-            height: 24px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .qty-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .item-quantity input {
-            width: 40px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 0.25rem;
-            font-size: 0.85rem;
-        }
-
-        @media (max-width: 768px) {
-            .calendar-day {
-                min-height: 60px;
-                font-size: 0.85rem;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+    <script src="inventory.js"></script>
+    <script src="savings.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -562,15 +89,16 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-dark bg-primary sticky-top">
+    <nav class="navbar navbar-light sticky-top">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1"><i class="bi bi-cart4"></i> MarketPlanner</span>
             <div class="d-flex align-items-center">
-                <button id="btnInstalar" class="btn btn-sm btn-outline-light me-2 d-none">
+                <button id="btnInstalar" class="btn btn-sm btn-outline-primary me-2 d-none">
                     <i class="bi bi-download"></i> Instalar App
                 </button>
-                <div class="text-white text-end">
-                    <small>BCV: <span id="displayTasa">0.00</span> Bs</small>
+                <div class="text-primary text-end fw-bold px-2 py-1 rounded"
+                    style="background: rgba(var(--primary-rgb), 0.1); border: 1px solid rgba(var(--primary-rgb), 0.2);">
+                    <small>BCV: <span id="displayTasa" class="text-primary">0.00</span> Bs</small>
                 </div>
             </div>
         </div>
@@ -578,338 +106,54 @@
 
     <ul class="nav nav-tabs nav-justified bg-white shadow-sm" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒
+            <button class="nav-link active" id="inicio-tab" data-bs-toggle="tab" data-bs-target="#inicio"
+                type="button">🏠
+                Inicio</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button">🛒
                 Lista</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos"
-                type="button">🏪
+                type="button">📦
                 Productos</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="finanzas-tab" data-bs-toggle="tab" data-bs-target="#finanzas" type="button">💰
-                Finanzas</button>
+            <button class="nav-link" id="gestion-tab" data-bs-toggle="tab" data-bs-target="#gestion" type="button">💰
+                Gestión</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button">⚙️
-                Ajustes</button>
+            <button class="nav-link" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button">👤
+                Perfil</button>
         </li>
     </ul>
 
     <div class="container mt-3 tab-content" id="myTabContent">
 
-        <div class="tab-pane fade show active" id="lista" role="tabpanel">
-
-            <div class="search-container mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador"
-                        autocomplete="off">
-                    <button class="btn btn-outline-primary" type="button" onclick="abrirEscanner('search')">
-                        <i class="bi bi-barcode-scan"></i>
-                    </button>
-                </div>
-                <div id="sugerenciasBusqueda" class="search-suggestions"></div>
-            </div>
-
-            <div class="card card-resumen mb-3 shadow-sm">
-                <div class="card-body py-2 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="m-0 text-primary">Total Estimado</h6>
-                        <small class="text-muted">Incidencia incluida</small>
-                    </div>
-                    <div class="text-end">
-                        <h4 class="m-0" id="totalGeneralUSD">$0.00</h4>
-                        <span class="precio-bs" id="totalGeneralBS">Bs 0.00</span>
+        <div class="tab-pane fade show active" id="inicio" role="tabpanel">
+            <div class="card shadow-sm border-0 mb-3 bg-primary text-white"
+                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">Hola, <span id="welcomeName">Usuario</span>! 👋</h5>
+                            <p class="small opacity-75 mb-0">Resumen financiero de este mes</p>
+                        </div>
+                        <i class="bi bi-person-circle fs-1 opacity-50"></i>
                     </div>
                 </div>
             </div>
 
-            <div id="contenedorProductos" class="list-group">
-                <!-- Los productos se cargan aquí -->
-            </div>
-
-            <button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalNuevo">
-                <i class="bi bi-plus-lg"></i>
-            </button>
-        </div>
-
-        <div class="tab-pane fade" id="finanzas" role="tabpanel">
-
-            <!-- Calculadora de Reparto -->
-            <div class="card mb-3 shadow-sm border-0 bg-primary-soft">
-                <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center"
-                    style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseReparto">
-                    <span class="small fw-bold text-primary text-uppercase letter-spacing-1">📊 Reparto (%)</span>
-                    <i class="bi bi-chevron-down text-primary"></i>
-                </div>
-                <div id="collapseReparto" class="collapse">
-                    <div class="card-body pt-2">
-                        <div class="row g-2 align-items-end mb-3">
-                            <div class="col-8">
-                                <label class="form-label small mb-1 opacity-75">Monto Total ($)</label>
-                                <input type="number" id="montoReparto" class="form-control form-control-sm"
-                                    placeholder="0.00" oninput="calcularReparto()">
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-sm btn-primary w-100" onclick="agregarFilaPorcentaje()">+
-                                    Fila</button>
-                            </div>
-                        </div>
-                        <div id="filasPorcentajes" class="small">
-                            <div class="row g-2 mb-2 align-items-center">
-                                <div class="col-5">
-                                    <input type="text" class="form-control form-control-sm label-porcentaje"
-                                        value="Ahorro">
-                                </div>
-                                <div class="col-3">
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control valor-porcentaje" value="20"
-                                            oninput="calcularReparto()">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end fw-bold text-primary">
-                                    <span class="resultado-porcentaje">$0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-white rounded-3 border d-flex justify-content-between small">
-                            <span>Restante: <strong id="repartoRestante">100%</strong></span>
-                            <strong id="montoRestante" class="text-primary">$0.00</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Registro de Movimientos -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
-                    data-bs-toggle="collapse" data-bs-target="#collapseRegistro">
-                    <span class="small fw-bold text-uppercase">➕ Registrar Movimiento</span>
-                    <i class="bi bi-plus-circle-fill text-primary"></i>
-                </div>
-                <div id="collapseRegistro" class="collapse">
-                    <div class="card-body">
-                        <form id="formFinanzas" class="row g-2 small">
-                            <div class="col-6">
-                                <select class="form-select form-select-sm" id="finTipo"
-                                    onchange="toggleCompartirDeuda()">
-                                    <option value="ingreso">Ingreso (+)</option>
-                                    <option value="egreso">Egreso (-)</option>
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <input type="text" class="form-control form-control-sm" id="finCategoria"
-                                    placeholder="Categoría..." list="catList">
-                            </div>
-                            <div class="col-6">
-                                <input type="text" class="form-control form-control-sm" id="finConcepto"
-                                    placeholder="Concepto..." required>
-                            </div>
-                            <div class="col-6">
-                                <input type="number" step="0.01" class="form-control form-control-sm" id="finMonto"
-                                    placeholder="Monto ($)" required>
-                            </div>
-                            <div class="col-12">
-                                <input type="date" class="form-control form-control-sm" id="finFecha" required>
-                            </div>
-                            <div class="col-12" id="divCompartirDeuda" style="display: none;">
-                                <select class="form-select form-select-sm border-primary" id="finCompartirCon">
-                                    <option value="">No compartir</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary btn-sm w-100">Guardar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- CIERRE Registro Movimiento Card -->
-
-            <!-- Asistente Cashea -->
-            <div class="card mb-3 shadow-sm border-0">
-                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
-                    data-bs-toggle="collapse" data-bs-target="#collapseCashea">
-                    <span class="small fw-bold text-uppercase text-muted">🔵 Asistente Cashea</span>
-                    <i class="bi bi-lightning-charge-fill text-primary"></i>
-                </div>
-                <div id="collapseCashea" class="collapse">
-                    <div class="card-body">
-                        <div class="row g-2 small">
-                            <div class="col-12">
-                                <input type="number" class="form-control form-control-sm" id="casheaMontoTotal"
-                                    placeholder="Monto de la Compra ($)">
-                            </div>
-                            <div class="col-6">
-                                <select class="form-select form-select-sm" id="casheaLinea"
-                                    onchange="actualizarCuotasCashea()">
-                                    <option value="cotidiana">Cotidiana</option>
-                                    <option value="principal" selected>Principal</option>
-                                </select>
-                            </div>
-                            <div class="col-6" id="contenedorCuotasPrincipal">
-                                <select class="form-select form-select-sm" id="casheaCuotas">
-                                    <option value="3">3 Cuotas</option>
-                                    <option value="6">6 Cuotas</option>
-                                    <option value="9">9 Cuotas</option>
-                                </select>
-                            </div>
-                            <div id="resultadoCashea" class="col-12 d-none">
-                                <div class="p-2 bg-primary-soft rounded-3 mt-2">
-                                    <div class="d-flex justify-content-between"><span>Inicial (40%):</span> <strong
-                                            id="casheaInicial">$0.00</strong></div>
-                                    <div class="d-flex justify-content-between"><span>Por Cuota:</span> <strong
-                                            id="casheaMontoCuota">$0.00</strong></div>
-                                    <button class="btn btn-sm btn-primary w-100 mt-2 py-1" onclick="registrarCashea()"
-                                        style="font-size: 0.75rem">Registrar Cuotas</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <h6 class="small fw-bold text-uppercase text-muted letter-spacing-1 mb-3">Planificación de Pagos</h6>
-                <div class="alert bg-primary-soft border-0 py-2 d-flex justify-content-between align-items-center">
-                    <span class="small opacity-75">Disponible:</span>
-                    <strong class="text-primary" id="dineroDisponible">$0.00</strong>
-                </div>
-
-                <!-- Calendario de Pagos -->
-                <div class="card shadow-sm mb-3">
-                    <div class="calendar-header">
-                        <button class="btn btn-sm btn-light" onclick="previousMonth()">
-                            <i class="bi bi-chevron-left"></i>
-                        </button>
-                        <div class="calendar-title" id="calendarTitle">Enero 2024</div>
-                        <button class="btn btn-sm btn-light" onclick="nextMonth()">
-                            <i class="bi bi-chevron-right"></i>
-                        </button>
-                    </div>
-                    <div class="calendar-grid" id="calendarGrid">
-                        <!-- Generado dinámicamente -->
-                    </div>
-                </div>
-
-                <ul class="list-group list-group-flush mb-5" id="listaFinanzas">
-                    <!-- Din ámico -->
-                </ul>
-            </div>
-
-            <!-- Gastos Recurrentes -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
-                    data-bs-toggle="collapse" data-bs-target="#collapseRecurrentes">
-                    <span class="small fw-bold text-uppercase">🔁 Gastos Recurrentes</span>
-                    <i class="bi bi-calendar-check text-primary"></i>
-                </div>
-                <div id="collapseRecurrentes" class="collapse">
-                    <div class="card-body">
-                        <button class="btn btn-sm btn-primary w-100 mb-3" data-bs-toggle="modal"
-                            data-bs-target="#modalRecurrente">
-                            <i class="bi bi-plus-circle"></i> Agregar Gasto Recurrente
-                        </button>
-                        <div id="listaRecurrentes" class="small">
-                            <!-- Lista dinámica de gastos recurrentes -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gastos Variables Semanales -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
-                    data-bs-toggle="collapse" data-bs-target="#collapseVariables">
-                    <span class="small fw-bold text-uppercase">📊 Gastos Variables (Semanales)</span>
-                    <i class="bi bi-cash-stack text-primary"></i>
-                </div>
-                <div id="collapseVariables" class="collapse">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <select class="form-select form-select-sm mb-2" id="categoriaVariable">
-                                <option value="Transporte">🚗 Transporte</option>
-                                <option value="Comida">🍔 Comida</option>
-                                <option value="Servicios">🔧 Servicios</option>
-                                <option value="Otros">📦 Otros</option>
-                            </select>
-                            <div class="input-group input-group-sm">
-                                <input type="text" class="form-control" id="conceptoVariable"
-                                    placeholder="Ej: Carrera de moto">
-                                <input type="number" step="0.01" class="form-control" id="montoVariable"
-                                    placeholder="$">
-                                <button class="btn btn-primary" onclick="agregarGastoVariable()"><i
-                                        class="bi bi-plus-lg"></i></button>
-                            </div>
-                        </div>
-                        <div id="resumenSemanal" class="alert bg-primary-soft border-0 mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span class="small">Total de la semana:</span>
-                                <strong id="totalSemanalUSD" class="text-primary">$0.00</strong>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="small">En Bs:</span>
-                                <strong id="totalSemanalBS" class="text-muted">Bs 0.00</strong>
-                            </div>
-                        </div>
-                        <div id="listaVariables" class="mb-2">
-                            <!-- Lista de gastos de la semana -->
-                        </div>
-                        <button class="btn btn-sm btn-success w-100" onclick="pagarSemana()" id="btnPagarSemana">
-                            <i class="bi bi-check-circle"></i> Marcar como Pagado y Resetear
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ahorros -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
-                    data-bs-toggle="collapse" data-bs-target="#collapseAhorros">
-                    <span class="small fw-bold text-uppercase">💰 Ahorros</span>
-                    <i class="bi bi-piggy-bank text-primary"></i>
-                </div>
-                <div id="collapseAhorros" class="collapse">
-                    <div class="card-body">
-                        <div class="alert bg-success bg-opacity-10 border-0 mb-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="small text-muted">Total en USD</div>
-                                    <h5 class="mb-0 text-success" id="totalAhorrosUSD">$0.00</h5>
-                                </div>
-                                <div class="text-end">
-                                    <div class="small text-muted">Total en Bs</div>
-                                    <h5 class="mb-0 text-success" id="totalAhorrosBS">Bs 0.00</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 mb-3">
-                            <button class="btn btn-sm btn-success flex-fill" data-bs-toggle="modal"
-                                data-bs-target="#modalAhorros" onclick="prepararAhorroModal('deposito')">
-                                <i class="bi bi-plus-circle"></i> Agregar Fondos
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger flex-fill" data-bs-toggle="modal"
-                                data-bs-target="#modalAhorros" onclick="prepararAhorroModal('retiro')">
-                                <i class="bi bi-dash-circle"></i> Retirar Fondos
-                            </button>
-                        </div>
-                        <div id="historialAhorros" class="small">
-                            <!-- Historial de transacciones -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard con Gráficas -->
+            <!-- Dashboard con Gráficas (Moved) -->
             <div class="card mb-3 shadow-sm">
                 <div class="card-header py-2 d-flex justify-content-between align-items-center" style="cursor: pointer;"
                     data-bs-toggle="collapse" data-bs-target="#collapseDashboard">
                     <span class="small fw-bold text-uppercase">📈 Dashboard Financiero</span>
                     <i class="bi bi-graph-up text-primary"></i>
                 </div>
-                <div id="collapseDashboard" class="collapse">
+                <!-- Default open on Desktop? Keep collapsed for mobile as before or show? -->
+                <div id="collapseDashboard" class="collapse show">
                     <div class="card-body">
                         <!-- Resumen de Métricas -->
                         <div class="row g-2 mb-3">
@@ -977,112 +221,467 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-        </div> <!-- FIN FINANZAS -->
+        <div class="tab-pane fade" id="lista" role="tabpanel">
+
+            <div class="search-container mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar producto o mercado..." id="buscador"
+                        autocomplete="off">
+                    <button class="btn btn-outline-primary" type="button" onclick="abrirEscanner('search')">
+                        <i class="bi bi-barcode-scan"></i>
+                    </button>
+                </div>
+                <div id="sugerenciasBusqueda" class="search-suggestions"></div>
+            </div>
+
+            <!-- Budget Dashboard -->
+            <div class="card border-0 shadow-sm mb-3"
+                style="background: var(--card-bg); border-radius: var(--radius-lg);">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-end mb-2">
+                        <div>
+                            <small class="text-muted fw-bold text-uppercase"
+                                style="font-size: 0.7rem; letter-spacing: 0.5px;">Presupuesto</small>
+                            <div class="d-flex align-items-center gap-2 cursor-pointer" onclick="editarPresupuesto()">
+                                <h3 class="m-0 fw-bold" id="displayPresupuesto">$0.00</h3>
+                                <i class="bi bi-pencil-square text-muted opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted d-block mb-1">Total Lista</small>
+                            <h3 class="m-0 fw-bold text-primary" id="totalGeneralUSD">$0.00</h3>
+                            <small class="text-muted" id="totalGeneralBS">Bs 0.00</small>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress"
+                        style="height: 12px; border-radius: 6px; background-color: var(--primary-soft);">
+                        <div id="budgetProgress" class="progress-bar bg-success" role="progressbar"
+                            style="width: 0%; transition: width 0.5s ease;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2 small text-muted">
+                        <span id="budgetStatus">Dentro del límite</span>
+                        <span id="budgetRemaining">Restante: $0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contenedorProductos" class="list-group">
+                <!-- Los productos se cargan aquí -->
+            </div>
+
+            <button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+        </div>
+
+        <div class="tab-pane fade" id="gestion" role="tabpanel">
+
+            <!-- Sub Nav -->
+            <ul class="nav nav-pills nav-fill mb-3 text-uppercase small bg-light p-1 rounded" id="gestionTabs"
+                role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active py-1" id="sub-pagos-tab" data-bs-toggle="tab"
+                        data-bs-target="#sub-pagos" type="button">🔄 Pagos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link py-1" id="sub-gastos-tab" data-bs-toggle="tab" data-bs-target="#sub-gastos"
+                        type="button">💸 Gastos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link py-1" id="sub-ahorros-tab" data-bs-toggle="tab"
+                        data-bs-target="#sub-ahorros" type="button">🐷 Ahorros</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link py-1" id="sub-presupuestos-tab" data-bs-toggle="tab"
+                        data-bs-target="#sub-presupuestos" type="button">📊 Presupuesto</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="gestionTabContent">
+
+                <!-- PAGOS TAB -->
+                <div class="tab-pane fade show active" id="sub-pagos" role="tabpanel">
+                    <div class="mt-4">
+                        <h6 class="small fw-bold text-uppercase text-muted letter-spacing-1 mb-3">Planificación de Pagos
+                        </h6>
+                        <div
+                            class="alert bg-primary-soft border-0 py-2 d-flex justify-content-between align-items-center">
+                            <span class="small opacity-75">Disponible:</span>
+                            <strong class="text-primary" id="dineroDisponible">$0.00</strong>
+                        </div>
+
+                        <!-- Calendario de Pagos -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="calendar-header">
+                                <button class="btn btn-sm btn-light" onclick="previousMonth()">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <div class="calendar-title" id="calendarTitle">Enero 2024</div>
+                                <button class="btn btn-sm btn-light" onclick="nextMonth()">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <!-- Generado dinámicamente -->
+                            </div>
+                        </div>
+
+                        <ul class="list-group list-group-flush mb-5" id="listaFinanzas">
+                            <!-- Din ámico -->
+                        </ul>
+                    </div>
+
+                    <!-- Gastos Recurrentes -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseRecurrentes">
+                            <span class="small fw-bold text-uppercase">🔁 Gastos Recurrentes</span>
+                            <i class="bi bi-calendar-check text-primary"></i>
+                        </div>
+                        <div id="collapseRecurrentes" class="collapse">
+                            <div class="card-body">
+                                <button class="btn btn-sm btn-primary w-100 mb-3" data-bs-toggle="modal"
+                                    data-bs-target="#modalRecurrente">
+                                    <i class="bi bi-plus-circle"></i> Agregar Gasto Recurrente
+                                </button>
+                                <div id="listaRecurrentes" class="small">
+                                    <!-- Lista dinámica de gastos recurrentes -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculadora de Reparto -->
+                    <div class="card mb-3 shadow-sm border-0 bg-primary-soft">
+                        <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseReparto">
+                            <span class="small fw-bold text-primary text-uppercase letter-spacing-1">📊 Reparto
+                                (%)</span>
+                            <i class="bi bi-chevron-down text-primary"></i>
+                        </div>
+                        <div id="collapseReparto" class="collapse">
+                            <div class="card-body pt-2">
+                                <div class="row g-2 align-items-end mb-3">
+                                    <div class="col-8">
+                                        <label class="form-label small mb-1 opacity-75">Monto Total ($)</label>
+                                        <input type="number" id="montoReparto" class="form-control form-control-sm"
+                                            placeholder="0.00" oninput="calcularReparto()">
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-sm btn-primary w-100" onclick="agregarFilaPorcentaje()">+
+                                            Fila</button>
+                                    </div>
+                                </div>
+                                <div id="filasPorcentajes" class="small">
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-5">
+                                            <input type="text" class="form-control form-control-sm label-porcentaje"
+                                                value="Ahorro">
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="input-group input-group-sm">
+                                                <input type="number" class="form-control valor-porcentaje" value="20"
+                                                    oninput="calcularReparto()">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 text-end fw-bold text-primary">
+                                            <span class="resultado-porcentaje">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 p-2 bg-white rounded-3 border d-flex justify-content-between small">
+                                    <span>Restante: <strong id="repartoRestante">100%</strong></span>
+                                    <strong id="montoRestante" class="text-primary">$0.00</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GASTOS TAB -->
+                <div class="tab-pane fade" id="sub-gastos" role="tabpanel">
+                    <!-- Registro de Movimientos -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseRegistro">
+                            <span class="small fw-bold text-uppercase">➕ Registrar Movimiento</span>
+                            <i class="bi bi-plus-circle-fill text-primary"></i>
+                        </div>
+                        <div id="collapseRegistro" class="collapse show"> <!-- Default open in tab -->
+                            <div class="card-body">
+                                <form id="formFinanzas" class="row g-2 small">
+                                    <div class="col-6">
+                                        <select class="form-select form-select-sm" id="finTipo"
+                                            onchange="toggleCompartirDeuda()">
+                                            <option value="ingreso">Ingreso (+)</option>
+                                            <option value="egreso">Egreso (-)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="finCategoria"
+                                            placeholder="Categoría..." list="catList">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="finConcepto"
+                                            placeholder="Concepto..." required>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="number" step="0.01" class="form-control form-control-sm"
+                                            id="finMonto" placeholder="Monto ($)" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="date" class="form-control form-control-sm" id="finFecha" required>
+                                    </div>
+                                    <div class="col-12" id="divCompartirDeuda" style="display: none;">
+                                        <select class="form-select form-select-sm border-primary" id="finCompartirCon">
+                                            <option value="">No compartir</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">Guardar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gastos Variables Semanales -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseVariables">
+                            <span class="small fw-bold text-uppercase">📊 Gastos Variables (Semanales)</span>
+                            <i class="bi bi-cash-stack text-primary"></i>
+                        </div>
+                        <div id="collapseVariables" class="collapse">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <select class="form-select form-select-sm mb-2" id="categoriaVariable">
+                                        <option value="Transporte">🚗 Transporte</option>
+                                        <option value="Comida">🍔 Comida</option>
+                                        <option value="Servicios">🔧 Servicios</option>
+                                        <option value="Otros">📦 Otros</option>
+                                    </select>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" id="conceptoVariable"
+                                            placeholder="Ej: Carrera de moto">
+                                        <input type="number" step="0.01" class="form-control" id="montoVariable"
+                                            placeholder="$">
+                                        <button class="btn btn-primary" onclick="agregarGastoVariable()"><i
+                                                class="bi bi-plus-lg"></i></button>
+                                    </div>
+                                </div>
+                                <div id="resumenSemanal" class="alert bg-primary-soft border-0 mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="small">Total de la semana:</span>
+                                        <strong id="totalSemanalUSD" class="text-primary">$0.00</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="small">En Bs:</span>
+                                        <strong id="totalSemanalBS" class="text-muted">Bs 0.00</strong>
+                                    </div>
+                                </div>
+                                <div id="listaVariables" class="mb-2">
+                                    <!-- Lista de gastos de la semana -->
+                                </div>
+                                <button class="btn btn-sm btn-success w-100" onclick="pagarSemana()"
+                                    id="btnPagarSemana">
+                                    <i class="bi bi-check-circle"></i> Marcar como Pagado y Resetear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Asistente Cashea -->
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseCashea">
+                            <span class="small fw-bold text-uppercase text-muted">🔵 Asistente Cashea</span>
+                            <i class="bi bi-lightning-charge-fill text-primary"></i>
+                        </div>
+                        <div id="collapseCashea" class="collapse">
+                            <div class="card-body">
+                                <div class="row g-2 small">
+                                    <div class="col-12">
+                                        <input type="number" class="form-control form-control-sm" id="casheaMontoTotal"
+                                            placeholder="Monto de la Compra ($)">
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-select form-select-sm" id="casheaLinea"
+                                            onchange="actualizarCuotasCashea()">
+                                            <option value="cotidiana">Cotidiana</option>
+                                            <option value="principal" selected>Principal</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6" id="contenedorCuotasPrincipal">
+                                        <select class="form-select form-select-sm" id="casheaCuotas">
+                                            <option value="3">3 Cuotas</option>
+                                            <option value="6">6 Cuotas</option>
+                                            <option value="9">9 Cuotas</option>
+                                        </select>
+                                    </div>
+                                    <div id="resultadoCashea" class="col-12 d-none">
+                                        <div class="p-2 bg-primary-soft rounded-3 mt-2">
+                                            <div class="d-flex justify-content-between"><span>Inicial (40%):</span>
+                                                <strong id="casheaInicial">$0.00</strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between"><span>Por Cuota:</span> <strong
+                                                    id="casheaMontoCuota">$0.00</strong></div>
+                                            <button class="btn btn-sm btn-primary w-100 mt-2 py-1"
+                                                onclick="registrarCashea()" style="font-size: 0.75rem">Registrar
+                                                Cuotas</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AHORROS TAB -->
+                <div class="tab-pane fade" id="sub-ahorros" role="tabpanel">
+                    <!-- Ahorros -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center"
+                            style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseAhorros">
+                            <span class="small fw-bold text-uppercase">💰 Ahorros</span>
+                            <i class="bi bi-piggy-bank text-primary"></i>
+                        </div>
+                        <div id="collapseAhorros" class="collapse show">
+                            <div class="card-body">
+                                <div class="alert bg-success bg-opacity-10 border-0 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="small text-muted">Total en USD</div>
+                                            <h5 class="mb-0 text-success" id="totalAhorrosUSD">$0.00</h5>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="small text-muted">Total en Bs</div>
+                                            <h5 class="mb-0 text-success" id="totalAhorrosBS">Bs 0.00</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2 mb-3">
+                                    <button class="btn btn-sm btn-success flex-fill" data-bs-toggle="modal"
+                                        data-bs-target="#modalAhorros" onclick="prepararAhorroModal('deposito')">
+                                        <i class="bi bi-plus-circle"></i> Agregar Fondos
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger flex-fill" data-bs-toggle="modal"
+                                        data-bs-target="#modalAhorros" onclick="prepararAhorroModal('retiro')">
+                                        <i class="bi bi-dash-circle"></i> Retirar Fondos
+                                    </button>
+                                </div>
+                                <div id="historialAhorros" class="small">
+                                    <!-- Historial de transacciones -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Savings Goals Section -->
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-header py-2 d-flex justify-content-between align-items-center bg-white">
+                            <span class="small fw-bold text-uppercase text-primary"><i
+                                    class="bi bi-piggy-bank-fill"></i>
+                                Metas
+                                de Ahorro</span>
+                            <button class="btn btn-sm btn-outline-primary py-0" onclick="promptNuevaMeta()">+
+                                Meta</button>
+                        </div>
+                        <div class="card-body p-2" id="savingsGoalsContainer">
+                            <p class="text-muted text-center small my-2">Sin metas de ahorro activas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRESUPUESTOS TAB -->
+                <div class="tab-pane fade" id="sub-presupuestos" role="tabpanel">
+                    <div class="alert alert-info text-center border-0 bg-primary-soft m-3">
+                        <i class="bi bi-info-circle-fill text-primary mb-2 display-6"></i> <br>
+                        <strong>Gestión de Presupuestos (v5)</strong><br>
+                        <small>Próximamente podrás asignar presupuestos a categorías específicas.</small>
+                    </div>
+                </div>
+
+            </div> <!-- End Tab Content -->
+
+        </div> <!-- FIN GESTION -->
 
         <!-- PRODUCTOS TAB -->
         <div class="tab-pane fade" id="productos" role="tabpanel">
+            <div class="d-flex justify-content-center mb-3">
+                <div class="btn-group btn-group-sm shadow-sm p-1 bg-white rounded-pill" role="group">
+                    <input type="radio" class="btn-check" name="prodView" id="viewCatalog" checked
+                        onclick="switchProductView('catalog')">
+                    <label class="btn btn-outline-primary rounded-pill px-3" for="viewCatalog">📖 Catálogo</label>
+                    <input type="radio" class="btn-check" name="prodView" id="viewInventory"
+                        onclick="switchProductView('inventory')">
+                    <label class="btn btn-outline-primary rounded-pill px-3" for="viewInventory">🥘 Mi Cocina</label>
+                </div>
+            </div>
 
-            <!-- Filtros y Búsqueda -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body p-2">
-                    <div class="row g-2">
-                        <div class="col-md-5">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" id="searchProductCatalog"
-                                    placeholder="Buscar producto...">
+            <div id="catalogView">
+                <div class="input-group mb-3 shadow-sm rounded-pill overflow-hidden">
+                    <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="buscadorCatalogo" class="form-control border-0 py-2"
+                        placeholder="Buscar en el catálogo..." oninput="renderizarCatalogo()">
+                    <button class="btn btn-primary px-3" onclick="abrirModalProducto()"> Nuevo <i
+                            class="bi bi-plus-lg"></i></button>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8 col-md-7">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 small fw-bold text-uppercase text-muted">Catálogo General</h6>
+                            <span class="badge bg-soft-primary text-primary" id="catalogCount">0 productos</span>
+                        </div>
+                        <div id="gridProductos" class="products-grid"></div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-5">
+                        <div class="card shadow-sm border-0 rounded-4">
+                            <div class="card-header bg-white py-2 border-0">
+                                <span class="small fw-bold text-uppercase text-muted"><i class="bi bi-cart-check"></i>
+                                    Lista de Compra</span>
+                            </div>
+                            <div class="card-body p-2" style="max-height: 450px; overflow-y: auto;">
+                                <div id="shoppingListItems">
+                                    <p class="text-muted text-center small my-4">Tu lista está vacía</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-select form-select-sm" id="filterMercado">
-                                <option value="">Todos los mercados</option>
-                                <!-- Se llena dinámicamente -->
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-sm btn-outline-secondary w-100" onclick="clearProductFilters()">
-                                <i class="bi bi-x-circle"></i> Limpiar filtros
+                    </div>
+                </div>
+            </div>
+
+            <div id="inventoryView" style="display: none;">
+                <div class="card shadow-sm border-0 rounded-4 mb-3">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 fw-bold">Mi Inventario (Stock Recurrente)</h6>
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="inventoryManager.loadData().then(() => renderInventory())">
+                                <i class="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Layout principal: Grid productos + Lista de compra -->
-            <div class="row">
-                <!-- Grid de Productos -->
-                <div class="col-lg-8 col-md-7">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0"><i class="bi bi-grid-3x3-gap"></i> Catálogo de Productos</h6>
-                        <span class="badge bg-primary" id="catalogCount">0 productos</span>
-                    </div>
-                    <div id="productsGrid" class="products-grid">
-                        <!-- Cards generadas dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- Lista de Compra -->
-                <div class="col-lg-4 col-md-5">
-                    <div class="shopping-list-container sticky-top" style="top: 20px;">
-                        <div class="card shadow-sm">
-                            <div
-                                class="card-header bg-primary text-white py-2 d-flex justify-content-between align-items-center">
-                                <span><i class="bi bi-cart-check"></i> Mi Lista de Compra</span>
-                                <span class="badge bg-white text-primary" id="listCountBadge">0</span>
-                            </div>
-                            <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
-                                <div id="shoppingListItems">
-                                    <p class="text-muted text-center small my-4">
-                                        <i class="bi bi-cart-x fs-3 d-block mb-2"></i>
-                                        Tu lista está vacía
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-light">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong>Total estimado:</strong>
-                                    <div class="text-end">
-                                        <div class="text-primary fw-bold" id="listTotalUSD">$0.00</div>
-                                        <small class="text-muted" id="listTotalBS">Bs 0.00</small>
-                                    </div>
-                                </div>
-                                <div class="d-grid gap-1">
-                                    <button class="btn btn-sm btn-success" onclick="exportShoppingList()"
-                                        id="btnExportList" disabled>
-                                        <i class="bi bi-share"></i> Compartir Lista
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="clearShoppingList()">
-                                        <i class="bi bi-trash"></i> Limpiar Lista
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Historial de listas -->
-                        <div class="card shadow-sm mt-3">
-                            <div class="card-header py-2" style="cursor: pointer;" data-bs-toggle="collapse"
-                                data-bs-target="#collapseHistory">
-                                <small class="fw-bold"><i class="bi bi-clock-history"></i> Historial de Listas</small>
-                            </div>
-                            <div class="collapse" id="collapseHistory">
-                                <div class="card-body p-2" style="max-height: 200px; overflow-y: auto;">
-                                    <div id="listHistory" class="small">
-                                        <p class="text-muted text-center my-2">Sin historial</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="row g-2" id="inventoryGrid">
+                            <!-- Items de inventario -->
                         </div>
                     </div>
                 </div>
             </div>
-
         </div> <!-- FIN PRODUCTOS -->
 
-        <div class="tab-pane fade" id="config" role="tabpanel">
+        <div class="tab-pane fade" id="perfil" role="tabpanel">
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header py-2 bg-white">
-                    <span class="small fw-bold text-uppercase text-muted"><i class="bi bi-shield-lock"></i> Seguridad y
+                    <span class="small fw-bold text-uppercase text-muted"><i class="bi bi-shield-lock"></i>
+                        Seguridad y
                         Privacidad</span>
                 </div>
                 <div class="card-body p-3">
@@ -1111,10 +710,17 @@
                         </div>
                     </div>
 
-                    <h6 class="small fw-bold mb-2 text-muted text-uppercase" style="font-size: 0.7rem">Compartir mis
-                        datos con:</h6>
+                    <h6 class="small fw-bold mb-2 text-muted text-uppercase" style="font-size: 0.7rem">Compartir acceso
+                    </h6>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="email" id="shareEmailInput" class="form-control" placeholder="Email del usuario">
+                        <button class="btn btn-outline-primary" type="button"
+                            onclick="concederAccesoEmail()">Compartir</button>
+                    </div>
+                    <h6 class="small fw-bold mb-2 text-muted text-uppercase" style="font-size: 0.7rem">Usuarios con
+                        acceso:</h6>
                     <div id="listaUsuariosCompartir" class="list-group list-group-flush small mb-4">
-                        <div class="text-center p-3 opacity-50">Cargando lista de usuarios...</div>
+                        <div class="text-center p-3 opacity-50">Cargando...</div>
                     </div>
 
                     <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3" onclick="cerrarSesion()">
@@ -1474,15 +1080,29 @@
 
                 tasaBCV = data.tasa;
                 document.getElementById('displayTasa').innerText = tasaBCV.toFixed(2);
+                document.getElementById('welcomeName').innerText = currentUser.nombre;
 
-                renderizarProductos(data.products);
+                // Initialize Budget
+                cargarPresupuesto();
+
+                // Split rendering
+                renderizarLista(data.products);
+                renderizarCatalogo(data.products);
                 renderizarFinanzas(data.finanzas);
+
+                // Init Managers v5
+                inventoryManager = new InventoryManager(currentUser.id);
+                savingsManager = new SavingsManager(currentUser, {
+                    syncTransaction: async (goalId, tx, ver) => {
+                        return await llamarBackend('saveSavings', { payload: { ...tx, goalId, ownerId: currentUser.id } });
+                    }
+                });
 
                 // Cargar nuevas funcionalidades
                 cargarGastosRecurrentes();
                 cargarGastosVariables();
-                cargarAhorros();
                 cargarDashboard();
+                inventoryManager.loadData();
 
                 verificarNotificaciones(data.finanzas);
                 cargarListaCompartir();
@@ -1550,41 +1170,110 @@
             }
         }
 
-        // --- RENDERIZADO DE PRODUCTOS (CON BÚSQUEDA) ---
-        let productosCache = []; // Para filtrar localmente
+        // --- PRECIO & PRESUPUESTO ---
+        let budgetLimit = 0;
 
-        function renderizarProductos(productos) {
-            productosCache = productos;
+        function cargarPresupuesto() {
+            const saved = localStorage.getItem('budgetLimit');
+            if (saved) {
+                budgetLimit = parseFloat(saved);
+                document.getElementById('displayPresupuesto').innerText = `$${budgetLimit.toFixed(2)}`;
+            }
+        }
+
+        function editarPresupuesto() {
+            const newLimit = prompt("Ingresa el límite de tu presupuesto ($):", budgetLimit);
+            if (newLimit !== null && !isNaN(newLimit)) {
+                budgetLimit = parseFloat(newLimit);
+                localStorage.setItem('budgetLimit', budgetLimit);
+                document.getElementById('displayPresupuesto').innerText = `$${budgetLimit.toFixed(2)}`;
+                renderizarLista(productosCache); // Re-calc UI
+            }
+        }
+
+        function updateBudgetUI(currentTotal) {
+            const bar = document.getElementById('budgetProgress');
+            const status = document.getElementById('budgetStatus');
+            const remaining = document.getElementById('budgetRemaining');
+
+            if (budgetLimit <= 0) {
+                bar.style.width = '0%';
+                status.innerText = "Sin límite definido";
+                remaining.innerText = "";
+                return;
+            }
+
+            const percentage = Math.min((currentTotal / budgetLimit) * 100, 100);
+            bar.style.width = `${percentage}%`;
+
+            const diff = budgetLimit - currentTotal;
+            remaining.innerText = diff >= 0 ? `Restante: $${diff.toFixed(2)}` : `Excedido: $${Math.abs(diff).toFixed(2)}`;
+
+            bar.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+            if (percentage < 80) {
+                bar.classList.add('bg-success');
+                status.innerText = "Dentro del presupuesto";
+                status.className = "text-success fw-bold";
+            } else if (percentage < 100) {
+                bar.classList.add('bg-warning');
+                status.innerText = "¡Cerca del límite!";
+                status.className = "text-warning fw-bold";
+            } else {
+                bar.classList.add('bg-danger');
+                status.innerText = "¡Presupuesto Excedido!";
+                status.className = "text-danger fw-bold";
+            }
+        }
+
+        // --- RENDERIZADO DE PRODUCTOS (LISTA DE COMPRA) ---
+        let productosCache = [];
+
+        function renderizarLista(productos) {
+            productosCache = productos; // Update global cache
             const contenedor = document.getElementById('contenedorProductos');
             const termino = document.getElementById('buscador').value.toLowerCase();
 
             contenedor.innerHTML = "";
             let totalUSD = 0;
 
+            // Filter logic: In List Mode, we likely want ALL products that are currently "active" or just all for now?
+            // User request implies "Shopping List" concept. 
+            // For now, we will treat ALL products as "in the list" because the app currently has no "archive" status.
+            // Future refactor: Add 'status' field to products.
+
+            // Temporary: Show ALL products in List Tab (Legacy Behavior) but with new UI
+            // But we want to separate "Catalog" from "List".
+            // Since we don't have a backend change for "inList" boolean yet, we will assume everything is in list.
+            // PROPOSAL: Filter by "cantidad > 0" if we had a catalog inventory system.
+            // BASE: Just render all for now, as user manages them directly.
+
             productos.forEach(p => {
-                // p[1]=nombre, p[4]=mercado, p[6]=barcode
-                const coincide = p[1].toLowerCase().includes(termino) ||
-                    p[4].toLowerCase().includes(termino) ||
-                    (p[6] && p[6].toString().includes(termino));
+                const coincide = p[1].toLowerCase().includes(termino) || p[4].toLowerCase().includes(termino);
                 if (!coincide) return;
 
                 const subtotal = p[2] * p[3];
                 totalUSD += subtotal;
 
                 contenedor.innerHTML += `
-                    <div class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">${p[1]} <span class="badge bg-info">${p[5] || 'General'}</span></div>
-                            <small class="text-muted">📍 ${p[4]}</small><br>
-                            <small>${p[2]} x $${p[3]}</small>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-light rounded p-2 text-primary">
+                                <i class="bi bi-basket2-fill h4 m-0"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-main">${p[1]}</div>
+                                <div class="small text-muted">
+                                    <span class="badge bg-light text-dark border">${p[4]}</span> • ${p[2]} un. x $${p[3]}
+                                </div>
+                            </div>
                         </div>
                         <div class="text-end">
-                            <span class="fw-bold text-primary">$${subtotal.toFixed(2)}</span><br>
-                            <small class="precio-bs">Bs ${(subtotal * tasaBCV).toFixed(2)}</small>
-                            <div class="mt-1">
-                                <button class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="prepararEdicion(${p[0]})"><i class="bi bi-pencil small"></i></button>
-                                <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="eliminarProducto(${p[0]})"><i class="bi bi-trash small"></i></button>
-                            </div>
+                            <span class="fw-bold text-primary display-6" style="font-size: 1.1rem;">$${subtotal.toFixed(2)}</span>
+                            <div class="small text-muted">Bs ${(subtotal * tasaBCV).toFixed(2)}</div>
+                        </div>
+                        <div class="ms-2 ps-2 border-start">
+                             <button class="btn btn-icon btn-link text-muted p-1" onclick="prepararEdicion(${p[0]})"><i class="bi bi-pencil-square"></i></button>
+                             <button class="btn btn-icon btn-link text-danger p-1" onclick="eliminarProducto(${p[0]})"><i class="bi bi-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -1592,6 +1281,33 @@
 
             document.getElementById('totalGeneralUSD').innerText = `$${totalUSD.toFixed(2)}`;
             document.getElementById('totalGeneralBS').innerText = `Bs ${(totalUSD * tasaBCV).toFixed(2)}`;
+
+            updateBudgetUI(totalUSD);
+        }
+
+        // --- RENDERIZADO DE CATÁLOGO (HISTÓRICO) ---
+        function renderizarCatalogo(productos = productosCache) {
+            const contenedor = document.getElementById('gridProductos');
+            const termino = document.getElementById('buscadorCatalogo') ? document.getElementById('buscadorCatalogo').value.toLowerCase() : '';
+
+            if (!contenedor) return;
+            contenedor.innerHTML = "";
+
+            productos.forEach(p => {
+                if (termino && !p[1].toLowerCase().includes(termino)) return;
+
+                contenedor.innerHTML += `
+                   <div class="product-card p-3">
+                       <div class="product-image-placeholder mb-2">
+                           <i class="bi bi-box-seam"></i>
+                       </div>
+                       <div class="product-name text-truncate">${p[1]}</div>
+                       <div class="product-market text-truncate"><i class="bi bi-shop"></i> ${p[4]}</div>
+                       <div class="product-price"><strong>$${p[3].toFixed(2)}</strong></div>
+                       <button class="btn btn-sm btn-outline-primary w-100" onclick="prepararEdicion(${p[0]})">Editar / Agregar</button>
+                   </div>
+               `;
+            });
         }
 
         // Evento de búsqueda con sugerencias
@@ -1603,7 +1319,7 @@
 
             if (termino.length < 2) {
                 sugerenciasContenedor.style.display = 'none';
-                renderizarProductos(productosCache);
+                renderizarLista(productosCache);
                 return;
             }
 
@@ -1636,7 +1352,7 @@
                 }
             }
 
-            renderizarProductos(productosCache);
+            renderizarLista(productosCache);
         });
 
         async function buscarBarcodeGlobal(barcode) {
@@ -1683,7 +1399,7 @@
         function seleccionarSugerencia(nombre) {
             buscador.value = nombre;
             sugerenciasContenedor.style.display = 'none';
-            renderizarProductos(productosCache);
+            renderizarLista(productosCache);
         }
 
         // Cerrar sugerencias al hacer clic fuera
@@ -1822,10 +1538,24 @@
             document.getElementById('formProducto').appendChild(div);
         }
 
-        // Vincular botón guardar del modal
+        // --- VINCULAR BOTONES ---
         document.querySelector('#modalNuevo .btn-primary').addEventListener('click', () => {
             document.getElementById('formProducto').requestSubmit();
         });
+
+        // Cargar Savings Module
+    </script>
+    <script src="savings.js"></script>
+    <script>
+        // Init Savings Manager when user loads
+        let savingsManager = null;
+
+        function initSavings() {
+            if (currentUser && !savingsManager) {
+                savingsManager = new SavingsManager(currentUser, new MockSavingsBackend());
+                renderizarMetasAhorro();
+            }
+        }
 
         // --- LÓGICA ASISTENTE CASHEA ---
         const inputCasheaMonto = document.getElementById('casheaMontoTotal');
@@ -1897,7 +1627,7 @@
                 });
             }
 
-            alert("Plan Cashea registrado con éxito");
+            showToast("Plan Cashea registrado con éxito", "success");
             cargarDatosIniciales();
         }
 
@@ -1968,11 +1698,11 @@
             try {
                 const res = await llamarBackend('saveFinance', { payload });
                 if (res.success) {
-                    alert("Movimiento registrado");
+                    showToast("Movimiento registrado", "success");
                     e.target.reset();
                     cargarDatosIniciales();
                 } else {
-                    alert("Error: " + res.message);
+                    showToast("Error: " + res.message, "error");
                 }
             } catch (err) {
                 console.error(err);
@@ -2047,7 +1777,7 @@
 
             const res = await llamarBackend('crearUsuario', { payload });
             if (res.success) {
-                alert("Usuario creado con éxito");
+                showToast("Usuario creado con éxito", "success");
                 e.target.reset();
                 cargarListaCompartir(); // Refrescar lista
                 populateSharedWith(); // Refrescar dropdown
@@ -2082,31 +1812,56 @@
         }
 
         // --- CARGAR OTROS USUARIOS PARA COMPARTIR ---
+        // --- GESTIÓN DE PERMISOS (Email) ---
         async function cargarListaCompartir() {
             try {
-                const data = await llamarBackend('getAllUsers');
+                const data = await llamarBackend('getAllUsers'); // Returns all users with .tieneAcceso flag
                 const contenedor = document.getElementById('listaUsuariosCompartir');
                 contenedor.innerHTML = "";
 
                 if (data.usuarios) {
-                    data.usuarios.forEach(u => {
-                        if (u.id == currentUser.id) return;
-                        if (u.status && u.status !== 'Active' && u.status !== '') return;
+                    const compartidos = data.usuarios.filter(u => u.tieneAcceso && u.id != currentUser.id);
 
+                    if (compartidos.length === 0) {
+                        contenedor.innerHTML = '<div class="text-muted text-center p-2 small">No has compartido tu lista con nadie.</div>';
+                        return;
+                    }
+
+                    compartidos.forEach(u => {
                         contenedor.innerHTML += `
                             <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>${u.nombre}</span>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" 
-                                           onchange="actualizarPermiso(${u.id}, this.checked)"
-                                           ${u.tieneAcceso ? 'checked' : ''}>
-                                </div>
+                                <span>${u.nombre} <small class="text-muted">(${u.email || 'Sin email'})</small></span>
+                                <button class="btn btn-sm btn-outline-danger border-0" onclick="actualizarPermiso(${u.id}, false)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         `;
                     });
                 }
             } catch (err) {
-                console.warn("No se pudo cargar la lista de usuarios:", err);
+                console.warn("Error cargando permisos:", err);
+            }
+        }
+
+        async function concederAccesoEmail() {
+            const email = document.getElementById('shareEmailInput').value.trim();
+            if (!email) {
+                showToast("Ingresa un email válido", "warning");
+                return;
+            }
+
+            const res = await llamarBackend('gestionarPermiso', {
+                targetEmail: email,
+                accionPermiso: 'conceder',
+                userId: currentUser.id
+            });
+
+            if (res.success) {
+                showToast(`Acceso concedido a ${email}`, 'success');
+                document.getElementById('shareEmailInput').value = '';
+                cargarListaCompartir();
+            } else {
+                showToast("Error: " + res.message, 'error');
             }
         }
 
@@ -2117,6 +1872,7 @@
                 userId: currentUser.id
             });
             console.log(`Permiso ${otorgar ? 'concedido' : 'revocado'} para usuario ${idInvitado}`);
+            cargarListaCompartir();
         }
 
         // --- LÓGICA DE INSTALACIÓN PWA ---
@@ -2156,8 +1912,8 @@
             }
         });
 
-        function cerrarSesion() {
-            if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+        async function cerrarSesion() {
+            if (await showConfirmModal("Cerrar Sesión", "¿Estás seguro de que quieres cerrar sesión?", "Sí, cerrar", "Cancelar", true)) {
                 localStorage.removeItem('plannerUser');
                 location.reload();
             }
@@ -2205,7 +1961,7 @@
             const dia = parseInt(document.getElementById('recDia').value);
 
             if (!nombre || !monto || !dia) {
-                alert('Por favor completa todos los campos');
+                showToast('Por favor completa todos los campos', 'warning');
                 return;
             }
 
@@ -2238,10 +1994,10 @@
                 document.getElementById('formRecurrente').reset();
 
                 cargarGastosRecurrentes();
-                alert('Gasto recurrente agregado con éxito');
+                showToast('Gasto recurrente agregado con éxito', 'success');
             } catch (err) {
                 console.error(err);
-                alert('Error al guardar el gasto recurrente');
+                showToast('Error al guardar el gasto recurrente', 'error');
             }
         }
 
@@ -2336,7 +2092,7 @@
             const gasto = gastosRecurrentes.find(g => g.id === id);
             if (!gasto) return;
 
-            if (!confirm(`¿Marcar "${gasto.nombre}" como pagado?`)) return;
+            if (!await showConfirmModal("Confirmar Pago", `¿Marcar "${gasto.nombre}" como pagado?`)) return;
 
             // Registrar el pago en finanzas
             await llamarBackend('saveFinance', {
@@ -2370,11 +2126,11 @@
 
             cargarGastosRecurrentes();
             cargarDatosIniciales();
-            alert('¡Pago registrado! Próximo vencimiento actualizado.');
+            showToast('¡Pago registrado! Próximo vencimiento actualizado.', 'success');
         }
 
         async function eliminarRecurrente(id) {
-            if (!confirm('¿Eliminar este gasto recurrente?')) return;
+            if (!await showConfirmModal("Eliminar Gasto", "¿Eliminar este gasto recurrente?", "Eliminar", "Cancelar", true)) return;
 
             // Eliminar del backend
             try {
@@ -2404,7 +2160,7 @@
             const monto = parseFloat(document.getElementById('montoVariable').value);
 
             if (!concepto || !monto || monto <= 0) {
-                alert('Por favor completa el concepto y monto');
+                showToast('Por favor completa el concepto y monto', 'warning');
                 return;
             }
 
@@ -2435,6 +2191,13 @@
 
             registroSemana.totalSemana = registroSemana.gastos.reduce((sum, g) => sum + g.monto, 0);
 
+            // Sync with backend
+            try {
+                await llamarBackend('saveVariableExpense', { payload: registroSemana });
+            } catch (err) {
+                console.warn("Backend sync failed for variable expense:", err);
+            }
+
             localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(gastosSemanales));
 
             document.getElementById('conceptoVariable').value = '';
@@ -2443,8 +2206,19 @@
             cargarGastosVariables();
         }
 
-        function cargarGastosVariables() {
+        async function cargarGastosVariables() {
             const semanaActual = getNumeroSemana();
+
+            // Try loading from backend first
+            try {
+                const res = await llamarBackend('getVariableExpenses', { userId: currentUser.id });
+                if (res.success && res.data) {
+                    localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(res.data));
+                }
+            } catch (err) {
+                console.warn("Backend fetch failed for variable expenses, using local storage");
+            }
+
             const stored = localStorage.getItem('gastosVariables_' + currentUser.id);
             const gastosSemanales = stored ? JSON.parse(stored) : [];
 
@@ -2485,7 +2259,7 @@
 
             const totalSemana = registrosSemana.reduce((sum, r) => sum + r.totalSemana, 0);
 
-            if (!confirm(`¿Marcar como pagado el total de la semana: $${totalSemana.toFixed(2)}?`)) return;
+            if (!await showConfirmModal("Pagar Semana", `¿Marcar como pagado el total de la semana: $${totalSemana.toFixed(2)}?`)) return;
 
             // Registrar en finanzas
             for (const registro of registrosSemana) {
@@ -2499,6 +2273,13 @@
                     }
                 });
 
+                // Marcar como pagado en el registro de gastos variables del backend
+                try {
+                    await llamarBackend('markVariableAsPaid', { id: registro.id, userId: currentUser.id });
+                } catch (err) {
+                    console.warn("Error marking variable expense as paid on backend:", err);
+                }
+
                 registro.pagado = true;
             }
 
@@ -2506,593 +2287,351 @@
 
             cargarGastosVariables();
             cargarDatosIniciales();
-            alert('¡Semana marcada como pagada! Los gastos han sido registrados.');
+            showToast('¡Semana marcada como pagada!', 'success');
         }
 
         // ===== AHORROS =====
 
-        function prepararAhorroModal(tipo) {
-            document.getElementById('ahorroTipo').value = tipo;
-            document.getElementById('tituloModalAhorros').textContent =
-                tipo === 'deposito' ? 'Agregar Fondos a Ahorros' : 'Retirar Fondos de Ahorros';
+        // ===== AHORROS (SAVINGS MANAGER INTEGRATION) =====
 
-            const btn = document.getElementById('btnGuardarAhorro');
-            btn.className = tipo === 'deposito' ? 'btn btn-sm btn-success' : 'btn btn-sm btn-danger';
-            btn.innerHTML = '<i class="bi bi-' + (tipo === 'deposito' ? 'plus' : 'dash') + '-circle"></i> Guardar';
+        // Render UI from SavingsManager
+        function renderizarMetasAhorro() {
+            const container = document.getElementById('savingsGoalsContainer');
+            if (!savingsManager || !container) return;
 
-            document.getElementById('formAhorros').reset();
-            document.getElementById('ahorroTipo').value = tipo;
-        }
+            const goals = savingsManager.getAllGoals();
+            container.innerHTML = "";
 
-        function actualizarConversionAhorro() {
-            const moneda = document.getElementById('ahorroMoneda').value;
-            const monto = parseFloat(document.getElementById('ahorroMonto').value) || 0;
-            const conversion = document.getElementById('ahorroConversion');
-
-            if (moneda === 'BS') {
-                const enUSD = monto / tasaBCV;
-                conversion.textContent = `≈ $${enUSD.toFixed(2)} USD`;
-            } else {
-                const enBS = monto * tasaBCV;
-                conversion.textContent = `≈ Bs ${enBS.toFixed(2)}`;
-            }
-        }
-
-        async function guardarAhorro() {
-            const tipo = document.getElementById('ahorroTipo').value;
-            const moneda = document.getElementById('ahorroMoneda').value;
-            const monto = parseFloat(document.getElementById('ahorroMonto').value);
-            const nota = document.getElementById('ahorroNota').value.trim();
-
-            if (!monto || monto <= 0) {
-                alert('Por favor ingresa un monto válido');
+            if (goals.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center small my-2">Crea una meta para empezar a ahorrar.</p>';
                 return;
             }
 
-            const transaccion = {
-                id: Date.now(),
-                tipo,
-                monto,
-                moneda,
-                nota,
-                fecha: new Date().toISOString(),
-                ownerId: currentUser.id
-            };
+            goals.forEach(g => {
+                const percent = Math.round(g.state.progressPercentage);
+                const colorClass = percent >= 100 ? 'bg-success' : 'bg-primary';
 
-            const stored = localStorage.getItem('ahorros_' + currentUser.id);
-            ahorrosData = stored ? JSON.parse(stored) : [];
-
-            ahorrosData.push(transaccion);
-            localStorage.setItem('ahorros_' + currentUser.id, JSON.stringify(ahorrosData));
-
-            bootstrap.Modal.getInstance(document.getElementById('modalAhorros')).hide();
-
-            cargarAhorros();
-            alert(`${tipo === 'deposito' ? 'Fondos agregados' : 'Fondos retirados'} con éxito`);
-        }
-
-        function cargarAhorros() {
-            const stored = localStorage.getItem('ahorros_' + currentUser.id);
-            ahorrosData = stored ? JSON.parse(stored) : [];
-
-            let totalUSD = 0;
-            let totalBS = 0;
-
-            ahorrosData.forEach(t => {
-                const factor = t.tipo === 'deposito' ? 1 : -1;
-
-                if (t.moneda === 'USD') {
-                    totalUSD += t.monto * factor;
-                } else {
-                    totalBS += t.monto * factor;
-                }
-            });
-
-            // Mostrar totales
-            document.getElementById('totalAhorrosUSD').textContent = `$${totalUSD.toFixed(2)}`;
-            const totalBSConvertido = (totalUSD * tasaBCV) + totalBS;
-            document.getElementById('totalAhorrosBS').textContent = `Bs ${totalBSConvertido.toFixed(2)}`;
-
-            // Actualizar stat del dashboard
-            document.getElementById('statAhorros').textContent = `$${totalUSD.toFixed(2)}`;
-
-            // Mostrar historial
-            const historial = document.getElementById('historialAhorros');
-            historial.innerHTML = '';
-
-            if (ahorrosData.length === 0) {
-                historial.innerHTML = '<p class="text-muted text-center">No hay transacciones</p>';
-                return;
-            }
-
-            // Mostrar últimas 10 transacciones
-            const ultimas = [...ahorrosData].reverse().slice(0, 10);
-
-            ultimas.forEach(t => {
-                const icono = t.tipo === 'deposito' ? '➕' : '➖';
-                const clase = t.tipo === 'deposito' ? 'text-success' : 'text-danger';
-
-                historial.innerHTML += `
-                    <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
-                        <div>
-                            <div class="small">${icono} ${t.nota || (t.tipo === 'deposito' ? 'Depósito' : 'Retiro')}</div>
-                            <div class="text-muted" style="font-size: 0.7rem;">${new Date(t.fecha).toLocaleDateString()}</div>
+                container.innerHTML += `
+                    <div class="border rounded p-2 mb-2 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>${g.name}</strong>
+                            <small class="text-muted">$${g.state.currentAmount} / $${g.targetDetails.amount}</small>
                         </div>
-                        <strong class="${clase}">${t.monto.toFixed(2)} ${t.moneda}</strong>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                             <small class="text-muted">${percent}% completado</small>
+                             <div>
+                                <button class="btn btn-sm btn-light border py-0 px-2" onclick="prepararTransaccionAhorro('${g.id}', 'DEPOSIT')">+</button>
+                                <button class="btn btn-sm btn-light border py-0 px-2" onclick="prepararTransaccionAhorro('${g.id}', 'WITHDRAWAL')">-</button>
+                             </div>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // ===== DASHBOARD Y GRÁFICAS =====
+        function promptNuevaMeta() {
+            const nombre = prompt("Nombre de la meta (ej: Viaje):");
+            if (!nombre) return;
+            const target = parseFloat(prompt("Monto objetivo ($):"));
+            if (!target || isNaN(target)) return;
 
-        function cargarDashboard() {
-            // Actualizar estadísticas del mes actual
-            actualizarEstadisticas();
-
-            // Renderizar gráficas
-            renderizarGraficaMensual();
-            renderizarGraficaSemanal();
-            renderizarGraficaComparativa();
+            savingsManager.createGoal(nombre, target);
+            renderizarMetasAhorro();
         }
 
-        function actualizarEstadisticas() {
-            const hoy = new Date();
-            const mesActual = hoy.getMonth();
-            const anioActual = hoy.getFullYear();
+        let currentGoalId = null;
 
-            // Obtener datos de finanzas del mes actual
-            const stored = localStorage.getItem('plannerUser');
-            if (!stored) return;
+        function prepararTransaccionAhorro(goalId, tipo) {
+            currentGoalId = goalId;
+            const goal = savingsManager.getGoal(goalId);
 
-            // Calcular desde las finanzas cargadas (esto debería venir del backend idealmente)
-            let ingresosMes = 0;
-            let gastosMes = 0;
+            document.getElementById('ahorroTipo').value = tipo;
+            document.getElementById('tituloModalAhorros').textContent =
+                `${tipo === 'DEPOSIT' ? 'Depositar a' : 'Retirar de'} ${goal.name}`;
 
-            // Por ahora usar valores de ejemplo - idealmente calcular desde data real
-            document.getElementById('statIngresosMes').textContent = `$${ingresosMes.toFixed(2)}`;
-            document.getElementById('statGastosMes').textContent = `$${gastosMes.toFixed(2)}`;
-            document.getElementById('statBalance').textContent = `$${(ingresosMes - gastosMes).toFixed(2)}`;
+            const btn = document.getElementById('btnGuardarAhorro');
+            btn.className = tipo === 'DEPOSIT' ? 'btn btn-sm btn-success' : 'btn btn-sm btn-danger';
+            btn.innerHTML = tipo === 'DEPOSIT' ? 'Depositar' : 'Retirar';
+
+            document.getElementById('formAhorros').reset();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalAhorros')).show();
         }
 
-        function renderizarGraficaMensual() {
-            const ctx = document.getElementById('chartMensual');
-            if (!ctx) return;
+        async function guardarAhorro() {
+            if (!currentGoalId) return;
 
-            // Destroy previous instance if exists
-            if (chartsInstances.mensual) {
-                chartsInstances.mensual.destroy();
-            }
+            const tipo = document.getElementById('ahorroTipo').value; // DEPOSIT or WITHDRAWAL
+            const monto = parseFloat(document.getElementById('ahorroMonto').value);
 
-            // Datos de ejemplo - en producción vendrían del backend
-            const meses = ['Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            const ingresos = [500, 600, 550, 700, 650, 720];
-            const gastos = [400, 500, 480, 600, 550, 600];
-
-            chartsInstances.mensual = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: meses,
-                    datasets: [
-                        {
-                            label: 'Ingresos',
-                            data: ingresos,
-                            backgroundColor: 'rgba(132, 250, 176, 0.7)',
-                            borderColor: 'rgba(132, 250, 176, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Gastos',
-                            data: gastos,
-                            backgroundColor: 'rgba(250, 112, 154, 0.7)',
-                            borderColor: 'rgba(250, 112, 154, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderizarGraficaSemanal() {
-            const ctx = document.getElementById('chartSemanal');
-            if (!ctx) return;
-
-            if (chartsInstances.semanal) {
-                chartsInstances.semanal.destroy();
-            }
-
-            const semanas = ['S-8', 'S-7', 'S-6', 'S-5', 'S-4', 'S-3', 'S-2', 'S-1'];
-            const ingresos = [120, 150, 130, 180, 160, 170, 190, 200];
-            const gastos = [100, 120, 110, 150, 140, 145, 160, 155];
-
-            chartsInstances.semanal = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: semanas,
-                    datasets: [
-                        {
-                            label: 'Ingresos',
-                            data: ingresos,
-                            borderColor: 'rgba(132, 250, 176, 1)',
-                            backgroundColor: 'rgba(132, 250, 176, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Gastos',
-                            data: gastos,
-                            borderColor: 'rgba(250, 112, 154, 1)',
-                            backgroundColor: 'rgba(250, 112, 154, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderizarGraficaComparativa() {
-            const ctx = document.getElementById('chartComparativa');
-            if (!ctx) return;
-
-            if (chartsInstances.comparativa) {
-                chartsInstances.comparativa.destroy();
-            }
-
-            chartsInstances.comparativa = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Mensual', 'Semanal (promedio)'],
-                    datasets: [
-                        {
-                            label: 'Ingresos',
-                            data: [650, 165],
-                            backgroundColor: 'rgba(132, 250, 176, 0.7)'
-                        },
-                        {
-                            label: 'Gastos',
-                            data: [550, 140],
-                            backgroundColor: 'rgba(250, 112, 154, 0.7)'
-                        },
-                        {
-                            label: 'Balance',
-                            data: [100, 25],
-                            backgroundColor: 'rgba(168, 237, 234, 0.7)'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // ===== FUNCIÓN HELPER PARA GENERAR DATOS DE PRUEBA =====
-
-        window.generarDatosDemo = function () {
-            if (!currentUser) {
-                alert('Debes iniciar sesión primero');
+            if (!monto || monto <= 0) {
+                showToast('Por favor ingresa un monto válido', 'warning');
                 return;
             }
 
-            if (!confirm('¿Generar datos de demostración? Esto agregará gastos recurrentes, gastos variables y ahorros de ejemplo.')) {
-                return;
+            try {
+                const result = await savingsManager.addTransaction(currentGoalId, monto, tipo);
+
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalAhorros')).hide();
+                    renderizarMetasAhorro();
+
+                    if (result.conflict) {
+                        showInfoModal("Conflicto de Datos", "⚠️ Conflicto detectado: Alguien más actualizó esta meta. Se han recargado los datos más recientes.");
+                    } else if (result.offline) {
+                        showToast("Guardado en modo offline ☁️", 'info');
+                    } else {
+                        showToast(`${tipo === 'DEPOSIT' ? 'Fondos agregados' : 'Fondos retirados'} con éxito`, 'success');
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Error al procesar ahorro: " + e.message, 'error');
+            }
+        }
+
+        function cargarAhorros() {
+            // Deprecated in favor of savingsManager but kept empty to prevent breakages if called elsewhere
+        }
+
+
+
+        // ===== DASHBOARD (REAL DATA) =====
+        async function cargarDashboard() {
+            try {
+                const res = await llamarBackend('getFinanceStats', { userId: currentUser.id });
+                if (!res.success) throw new Error(res.message);
+
+                const stats = res.stats;
+
+                // 1. Update Cards
+                const cardIngresos = document.getElementById('statIngresosMes');
+                const cardGastos = document.getElementById('statGastosMes');
+                const cardBalance = document.getElementById('statBalance');
+                const cardAhorros = document.getElementById('statAhorros');
+
+                if (cardIngresos) cardIngresos.innerText = `$${stats.ingresosMes.toFixed(2)}`;
+                if (cardGastos) cardGastos.innerText = `$${stats.gastosMes.toFixed(2)}`;
+                if (cardBalance) cardBalance.innerText = `$${stats.balance.toFixed(2)}`;
+                if (cardAhorros) cardAhorros.innerText = `$${stats.ahorrosTotal.toFixed(2)}`; // Updated key
+
+                // 2. Render Charts
+                // Monthly Chart (Ingresos vs Gastos vs Balance)
+                renderChart('chartMensual', 'bar', {
+                    labels: ['Ingresos', 'Gastos', 'Balance'],
+                    datasets: [{
+                        label: 'Mes Actual',
+                        data: [stats.ingresosMes, stats.gastosMes, stats.balance],
+                        backgroundColor: ['#84fab0', '#fa709a', '#a8edea'],
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                }, 'mensual');
+
+                // Weekly/Comparison Charts (Placeholder or Basic)
+                renderChart('chartComparativa', 'doughnut', {
+                    labels: ['Ingresos', 'Gastos'],
+                    datasets: [{
+                        data: [stats.ingresosMes, stats.gastosMes],
+                        backgroundColor: ['#84fab0', '#fa709a'],
+                        hoverOffset: 4
+                    }]
+                }, 'comparativa');
+
+            } catch (e) {
+                console.warn("Error loading dashboard", e);
+            }
+        }
+
+        function renderChart(canvasId, type, data, key) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            if (chartsInstances[key]) {
+                chartsInstances[key].destroy();
             }
 
-            // Limpiar datos existentes
-            localStorage.removeItem('gastosRecurrentes_' + currentUser.id);
-            localStorage.removeItem('gastosVariables_' + currentUser.id);
-            localStorage.removeItem('ahorros_' + currentUser.id);
-
-            // Gastos Recurrentes de ejemplo
-            const gastosRecDemo = [
-                {
-                    id: Date.now() + '_1',
-                    nombre: 'Internet',
-                    monto: 15.00,
-                    frecuencia: 'monthly',
-                    diaVencimiento: 15,
-                    ownerId: currentUser.id,
-                    proximoPago: calcularProximoPago('monthly', 15)
-                },
-                {
-                    id: Date.now() + '_2',
-                    nombre: 'Telefonía Móvil',
-                    monto: 8.50,
-                    frecuencia: 'monthly',
-                    diaVencimiento: 5,
-                    ownerId: currentUser.id,
-                    proximoPago: calcularProximoPago('monthly', 5)
-                },
-                {
-                    id: Date.now() + '_3',
-                    nombre: 'Gimnasio',
-                    monto: 25.00,
-                    frecuencia: 'monthly',
-                    diaVencimiento: 1,
-                    ownerId: currentUser.id,
-                    proximoPago: calcularProximoPago('monthly', 1)
+            chartsInstances[key] = new Chart(ctx, {
+                type: type,
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: type === 'bar' ? {
+                        y: { beginAtZero: true }
+                    } : {}
                 }
-            ];
-            localStorage.setItem('gastosRecurrentes_' + currentUser.id, JSON.stringify(gastosRecDemo));
+            });
+        }
 
-            // Gastos Variables de ejemplo
-            const semanaActual = getNumeroSemana();
-            const gastosVarDemo = [
-                {
-                    semana: semanaActual,
-                    categoria: 'Transporte',
-                    gastos: [
-                        { concepto: 'Carrera moto taxi', monto: 2.50, fecha: new Date().toISOString() },
-                        { concepto: 'Bus', monto: 1.00, fecha: new Date().toISOString() },
-                        { concepto: 'Carrera moto taxi', monto: 3.00, fecha: new Date().toISOString() }
-                    ],
-                    totalSemana: 6.50,
-                    pagado: false,
-                    ownerId: currentUser.id
-                },
-                {
-                    semana: semanaActual,
-                    categoria: 'Comida',
-                    gastos: [
-                        { concepto: 'Almuerzo', monto: 5.00, fecha: new Date().toISOString() },
-                        { concepto: 'Snacks', monto: 2.50, fecha: new Date().toISOString() }
-                    ],
-                    totalSemana: 7.50,
-                    pagado: false,
-                    ownerId: currentUser.id
+        // ===== PRESUPUESTOS POR CATEGORÍA (v5) =====
+
+        // Configuration
+        const categoryLimits = {}; // { 'Carne': 50, 'Verduras': 30 }
+
+        async function loadCategoryBudgets() {
+            if (!currentUser) return;
+            try {
+                const res = await llamarBackend('getCategoryBudgets', { userId: currentUser.id });
+                if (res.success) {
+                    res.list.forEach(item => {
+                        categoryLimits[item.category] = parseFloat(item.limit);
+                    });
+                    renderCategoryBudgets();
                 }
-            ];
-            localStorage.setItem('gastosVariables_' + currentUser.id, JSON.stringify(gastosVarDemo));
+            } catch (e) {
+                console.error("Error loading budgets", e);
+            }
+        }
 
-            // Ahorros de ejemplo
-            const ahorrosDemo = [
-                {
-                    id: Date.now() - 10000,
-                    tipo: 'deposito',
-                    monto: 100.00,
-                    moneda: 'USD',
-                    nota: 'Ahorro inicial',
-                    fecha: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-                    ownerId: currentUser.id
-                },
-                {
-                    id: Date.now() - 5000,
-                    tipo: 'deposito',
-                    monto: 500,
-                    moneda: 'BS',
-                    nota: 'Ahorro en bolívares',
-                    fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    ownerId: currentUser.id
-                },
-                {
-                    id: Date.now(),
-                    tipo: 'deposito',
-                    monto: 50.00,
-                    moneda: 'USD',
-                    nota: 'Ahorro mensual',
-                    fecha: new Date().toISOString(),
-                    ownerId: currentUser.id
-                }
-            ];
-            localStorage.setItem('ahorros_' + currentUser.id, JSON.stringify(ahorrosDemo));
+        async function setCategoryBudget(category, limit) {
+            if (!category || isNaN(limit)) return;
+            categoryLimits[category] = parseFloat(limit);
+            renderCategoryBudgets();
 
-            // Recargar todo
-            cargarGastosRecurrentes();
-            cargarGastosVariables();
-            cargarAhorros();
-            cargarDashboard();
+            // Save to backend
+            try {
+                await llamarBackend('saveCategoryBudget', {
+                    payload: {
+                        ownerId: currentUser.id,
+                        category: category,
+                        limit: limit
+                    }
+                });
+                showToast(`Límite para ${category} actualizado`, 'success');
+            } catch (e) {
+                showToast("Error guardando límite", 'error');
+            }
+        }
 
-            alert('✅ Datos de demostración generados!\n\n🔁 3 gastos recurrentes\n📊 2 categorías de gastos variables\n💰 3 transacciones de ahorro');
-        };
+        function renderCategoryBudgets() {
+            const container = document.getElementById('categoryBudgetsList');
+            if (!container) return; // Might not exist yet if we don't add HTML
 
-        // ==================== CALENDARIO DE PAGOS ====================
+            // Calculate actual spending per category from Shopping List (Cart + Pending) 
+            // and potentially Finance history if we want a monthly view.
+            // For "MarketPlanner", let's focus on THIS trip/list vs Limit.
 
-        let currentCalendarDate = new Date();
-        let calendarEvents = [];
+            const spending = {};
 
-        function renderCalendar(year, month) {
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const prevLastDay = new Date(year, month, 0);
+            // From current shopping list
+            shoppingList.forEach(item => {
+                // Determine category? We have 'Mercado' but not Category in updated Product schema yet?
+                // Wait, Product schema is: [id, nombre, cantidad, precio, mercado, CATEGORIA, ...]
+                // Actually index 5 is Category! (See saveProduct backend code: "General")
+                // We need to ensure we have the category in the shoppingList item.
+                const cat = item.categoria || 'General';
+                spending[cat] = (spending[cat] || 0) + (item.precio * item.quantity);
+            });
 
-            const firstDayIndex = firstDay.getDay();
-            const lastDateMonth = lastDay.getDate();
-            const prevLastDate = prevLastDay.getDate();
-
-            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-            document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+            // Also need to know all available categories?
+            // Let's use keys from spending + keys from limits
+            const allCats = new Set([...Object.keys(spending), ...Object.keys(categoryLimits)]);
 
             let html = '';
+            allCats.forEach(cat => {
+                const spent = spending[cat] || 0;
+                const limit = categoryLimits[cat] || 0;
+                const pct = limit > 0 ? (spent / limit) * 100 : 0;
+                const isOver = limit > 0 && spent > limit;
 
-            // Headers de días
-            dayNames.forEach(day => {
-                html += `<div class="calendar-day-header">${day}</div>`;
+                html += `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-medium">${cat}</span>
+                            <span class="small ${isOver ? 'text-danger fw-bold' : 'text-muted'}">
+                                $${spent.toFixed(2)} / ${limit > 0 ? '$' + limit.toFixed(2) : '∞'}
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 6px; cursor: pointer;" onclick="promptBudgetLimit('${cat}', ${limit})">
+                            <div class="progress-bar ${isOver ? 'bg-danger' : 'bg-info'}" 
+                                role="progressbar" style="width: ${Math.min(pct, 100)}%"></div>
+                        </div>
+                    </div>
+                 `;
             });
 
-            // Días del mes anterior
-            for (let i = firstDayIndex; i > 0; i--) {
-                html += `<div class="calendar-day other-month">
-                    <div class="calendar-day-number">${prevLastDate - i + 1}</div>
-                </div>`;
-            }
-
-            // Días del mes actual
-            const today = new Date();
-            for (let day = 1; day <= lastDateMonth; day++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-                const events = calendarEvents.filter(e => e.date === dateStr);
-
-                html += `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="showEventDetails('${dateStr}')">
-                    <div class="calendar-day-number">${day}</div>
-                    <div class="event-dots">`;
-
-                events.forEach(event => {
-                    html += `<span class="event-dot ${event.type}" title="${event.title}"></span>`;
-                });
-
-                html += `</div></div>`;
-            }
-
-            // Días del próximo mes
-            const nextDays = 42 - (firstDayIndex + lastDateMonth);
-            for (let day = 1; day <= nextDays; day++) {
-                html += `<div class="calendar-day other-month">
-                    <div class="calendar-day-number">${day}</div>
-                </div>`;
-            }
-
-            document.getElementById('calendarGrid').innerHTML = html;
+            container.innerHTML = html;
         }
 
-        function previousMonth() {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+        async function promptBudgetLimit(category, currentLimit) {
+            // Simple prompt for now, could be improved with custom modal with inputs
+            // Using a simple workaround for input since showConfirmModal doesn't support inputs yet
+            // We'll trust the user has keyboard
+            const newLimit = prompt(`Definir límite para ${category} ($):`, currentLimit || 0);
+            if (newLimit !== null) {
+                setCategoryBudget(category, newLimit);
+            }
         }
 
-        function nextMonth() {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
+        // ===== DASHBOARD Y GRÁFICAS (DUPLICADO - REMOVIDO) =====
+        function switchProductView(view) {
+            document.getElementById('catalogView').style.display = view === 'catalog' ? 'block' : 'none';
+            document.getElementById('inventoryView').style.display = view === 'inventory' ? 'block' : 'none';
+            if (view === 'inventory') renderInventory();
         }
 
-        function loadCalendarEvents() {
-            calendarEvents = [];
+        function renderInventory() {
+            const container = document.getElementById('inventoryGrid');
+            if (!container) return;
+            container.innerHTML = "";
 
-            // Agregar finanzas regulares
-            const finanzas = JSON.parse(localStorage.getItem('finanzas_' + currentUser?.id) || '[]');
-            finanzas.forEach(f => {
-                if (f[3]) {
-                    const fecha = f[3].split('T')[0];
-                    calendarEvents.push({
-                        date: fecha,
-                        type: f[0].toLowerCase() === 'ingreso' ? 'income' : 'expense',
-                        title: f[1],
-                        amount: f[2]
-                    });
-                }
+            inventoryManager.data.forEach(item => {
+                const prod = productosCache.find(p => p[0] == item.productId);
+                if (!prod) return;
+
+                container.innerHTML += `
+                    <div class="col-12">
+                        <div class="list-group-item d-flex justify-content-between align-items-center bg-white border-0 shadow-sm rounded-3 mb-2 p-3">
+                            <div>
+                                <div class="fw-bold">${prod[1]}</div>
+                                <div class="small text-muted">Stock: ${item.qty} / Min: ${item.min}</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="inventoryManager.updateStock(${item.productId}, -1).then(() => renderInventory())">-</button>
+                                <span class="fw-bold px-2">${item.qty}</span>
+                                <button class="btn btn-sm btn-outline-primary" onclick="inventoryManager.updateStock(${item.productId}, 1).then(() => renderInventory())">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
-
-            // Agregar gastos recurrentes
-            if (gastosRecurrentes && gastosRecurrentes.length > 0) {
-                gastosRecurrentes.forEach(g => {
-                    calendarEvents.push({
-                        date: g.proximoPago,
-                        type: 'recurring',
-                        title: g.nombre,
-                        amount: g.monto
-                    });
-                });
-            }
-
-            renderCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth());
-        }
-
-        function showEventDetails(dateStr) {
-            const events = calendarEvents.filter(e => e.date === dateStr);
-            if (events.length === 0) return;
-
-            let html = '<div style="padding: 1rem;">';
-            html += `<h6 class="mb-3">Eventos del ${dateStr}</h6>`;
-
-            events.forEach(event => {
-                const color = event.type === 'income' ? '#4caf50' : event.type === 'expense' ? '#f44336' : '#ff9800';
-                html += `<div class="mb-2 p-2 border-start border-3" style="border-color: ${color} !important;">
-                    <strong>${event.title}</strong><br>
-                    <small class="text-muted">${event.type === 'income' ? 'Ingreso' : event.type === 'recurring' ? 'Gasto Recurrente' : 'Egreso'}</small><br>
-                    <span class="fw-bold" style="color: ${color};">$${parseFloat(event.amount).toFixed(2)}</span>
-                </div>`;
-            });
-
-            html += '</div>';
-
-            // Mostrar en un modal simple
-            if (confirm(`${events.length} evento(s) para ${dateStr}\n\nVer detalles?`)) {
-                alert(events.map(e => `${e.title}: $${e.amount}`).join('\n'));
-            }
-        }
-
-        // ==================== CATÁLOGO DE PRODUCTOS ====================
-
-        let allProducts = [];
-        let shoppingList = [];
-        let listHistory = [];
-
         async function loadProductsCatalog() {
             try {
                 const res = await llamarBackend('getInitialData', { userId: currentUser.id });
-                if (res.success && res.products) {
-                    allProducts = res.products;
-                    renderProductsCatalog(allProducts);
-                    loadMercadoFilter();
-                    document.getElementById('catalogCount').textContent = `${allProducts.length} productos`;
+                    if (res.success && res.products) {
+                        allProducts = res.products;
+                        renderProductsCatalog(allProducts);
+                        loadMercadoFilter();
+                        document.getElementById('catalogCount').textContent = `${allProducts.length} productos`;
+                    }
+                } catch (err) {
+                    console.error('Error cargando catálogo:', err);
+                    showToast('Error cargando catálogo de productos', 'error');
                 }
-            } catch (err) {
-                console.error('Error cargando catálogo:', err);
+
+                // Cargar lista de compra
+                loadShoppingList();
+                loadListHistory();
             }
 
-            // Cargar lista de compra
-            loadShoppingList();
-            loadListHistory();
-        }
+            function renderProductsCatalog(products) {
+                const grid = document.getElementById('productsGrid');
+                if (!grid) return;
 
-        function renderProductsCatalog(products) {
-            const grid = document.getElementById('productsGrid');
-            if (!grid) return;
+                if (products.length === 0) {
+                    grid.innerHTML = '<p class="text-muted text-center col-span-full">No hay productos disponibles</p>';
+                    return;
+                }
 
-            if (products.length === 0) {
-                grid.innerHTML = '<p class="text-muted text-center col-span-full">No hay productos disponibles</p>';
-                return;
-            }
-
-            grid.innerHTML = products.map(p => {
-                const inList = shoppingList.some(item => item.productId === p[0]);
-                return `
+                grid.innerHTML = products.map(p => {
+                    const inList = shoppingList.some(item => item.productId === p[0]);
+                    return `
                     <div class="product-card ${inList ? 'in-list' : ''}" data-id="${p[0]}">
                         ${inList ? '<span class="badge-in-list"><i class="bi bi-check-circle"></i> En lista</span>' : ''}
                         <div class="product-image-placeholder">
@@ -3113,284 +2652,379 @@
                         </button>
                     </div>
                 `;
-            }).join('');
-        }
+                }).join('');
+            }
 
-        function loadMercadoFilter() {
-            const mercados = [...new Set(allProducts.map(p => p[4]))];
-            const select = document.getElementById('filterMercado');
-            if (!select) return;
+            function loadMercadoFilter() {
+                const mercados = [...new Set(allProducts.map(p => p[4]))];
+                const select = document.getElementById('filterMercado');
+                if (!select) return;
 
-            select.innerHTML = '<option value="">Todos los mercados</option>' +
-                mercados.map(m => `<option value="${m}">${m}</option>`).join('');
-        }
+                select.innerHTML = '<option value="">Todos los mercados</option>' +
+                    mercados.map(m => `<option value="${m}">${m}</option>`).join('');
+            }
 
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchProductCatalog')?.value.toLowerCase() || '';
-            const mercado = document.getElementById('filterMercado')?.value || '';
+            function filterProducts() {
+                const searchTerm = document.getElementById('searchProductCatalog')?.value.toLowerCase() || '';
+                const mercado = document.getElementById('filterMercado')?.value || '';
 
-            const filtered = allProducts.filter(p => {
-                const matchSearch = p[1].toLowerCase().includes(searchTerm);
-                const matchMercado = !mercado || p[4] === mercado;
-                return matchSearch && matchMercado;
+                const filtered = allProducts.filter(p => {
+                    const matchSearch = p[1].toLowerCase().includes(searchTerm);
+                    const matchMercado = !mercado || p[4] === mercado;
+                    return matchSearch && matchMercado;
+                });
+
+                renderProductsCatalog(filtered);
+                document.getElementById('catalogCount').textContent = `${filtered.length} productos`;
+            }
+
+            function clearProductFilters() {
+                document.getElementById('searchProductCatalog').value = '';
+                document.getElementById('filterMercado').value = '';
+                filterProducts();
+            }
+
+            // Event listeners para filtros
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('searchProductCatalog');
+                const mercadoSelect = document.getElementById('filterMercado');
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', filterProducts);
+                }
+
+                if (mercadoSelect) {
+                    mercadoSelect.addEventListener('change', filterProducts);
+                }
             });
 
-            renderProductsCatalog(filtered);
-            document.getElementById('catalogCount').textContent = `${filtered.length} productos`;
-        }
+            // ==================== LISTA DE COMPRA ====================
 
-        function clearProductFilters() {
-            document.getElementById('searchProductCatalog').value = '';
-            document.getElementById('filterMercado').value = '';
-            filterProducts();
-        }
+            function addToShoppingList(productId) {
+                const product = allProducts.find(p => p[0] == productId);
+                if (!product) return;
 
-        // Event listeners para filtros
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('searchProductCatalog');
-            const mercadoSelect = document.getElementById('filterMercado');
+                if (shoppingList.some(item => item.productId == productId)) {
+                    showToast('Producto ya está en la lista', 'info');
+                    return;
+                }
 
-            if (searchInput) {
-                searchInput.addEventListener('input', filterProducts);
-            }
+                shoppingList.push({
+                    productId: product[0],
+                    nombre: product[1],
+                    mercado: product[4],
+                    precio: parseFloat(product[3]),
+                    quantity: 1,
+                    checked: false
+                });
 
-            if (mercadoSelect) {
-                mercadoSelect.addEventListener('change', filterProducts);
-            }
-        });
-
-        // ==================== LISTA DE COMPRA ====================
-
-        function addToShoppingList(productId) {
-            const product = allProducts.find(p => p[0] == productId);
-            if (!product) return;
-
-            if (shoppingList.some(item => item.productId == productId)) {
-                showToast('Producto ya está en la lista', 'info');
-                return;
-            }
-
-            shoppingList.push({
-                productId: product[0],
-                nombre: product[1],
-                mercado: product[4],
-                precio: parseFloat(product[3]),
-                quantity: 1
-            });
-
-            saveShoppingList();
-            renderShoppingList();
-            filterProducts(); // Re-render para actualizar badges
-            showToast(`${product[1]} agregado a la lista`, 'success');
-        }
-
-        function removeFromShoppingList(productId) {
-            shoppingList = shoppingList.filter(item => item.productId != productId);
-            saveShoppingList();
-            renderShoppingList();
-            filterProducts();
-            showToast('Producto eliminado de la lista', 'info');
-        }
-
-        function updateQuantity(productId, newQuantity) {
-            const item = shoppingList.find(i => i.productId == productId);
-            if (item && newQuantity > 0) {
-                item.quantity = parseInt(newQuantity);
                 saveShoppingList();
                 renderShoppingList();
+                filterProducts(); // Re-render para actualizar badges
+                showToast(`${product[1]} agregado a la lista`, 'success');
             }
-        }
 
-        function incrementQuantity(productId) {
-            const item = shoppingList.find(i => i.productId == productId);
-            if (item) {
-                item.quantity++;
+            function removeFromShoppingList(productId) {
+                shoppingList = shoppingList.filter(item => item.productId != productId);
                 saveShoppingList();
                 renderShoppingList();
+                filterProducts();
+                showToast('Producto eliminado de la lista', 'info');
             }
-        }
 
-        function decrementQuantity(productId) {
-            const item = shoppingList.find(i => i.productId == productId);
-            if (item && item.quantity > 1) {
-                item.quantity--;
-                saveShoppingList();
-                renderShoppingList();
+            function updateQuantity(productId, newQuantity) {
+                const item = shoppingList.find(i => i.productId == productId);
+                if (item && newQuantity > 0) {
+                    item.quantity = parseInt(newQuantity);
+                    saveShoppingList();
+                    renderShoppingList();
+                }
             }
-        }
 
-        function renderShoppingList() {
-            const container = document.getElementById('shoppingListItems');
-            if (!container) return;
+            function incrementQuantity(productId) {
+                const item = shoppingList.find(i => i.productId == productId);
+                if (item) {
+                    item.quantity++;
+                    saveShoppingList();
+                    renderShoppingList();
+                }
+            }
 
-            if (shoppingList.length === 0) {
-                container.innerHTML = `
+            function toggleItemCheck(productId) {
+                const item = shoppingList.find(i => i.productId == productId);
+                if (item) {
+                    item.checked = !item.checked;
+                    saveShoppingList();
+                    renderShoppingList();
+                }
+            }
+
+            function decrementQuantity(productId) {
+                const item = shoppingList.find(i => i.productId == productId);
+                if (item && item.quantity > 1) {
+                    item.quantity--;
+                    saveShoppingList();
+                    renderShoppingList();
+                }
+            }
+
+            function renderShoppingList() {
+                const container = document.getElementById('shoppingListItems');
+                if (!container) return;
+
+                if (shoppingList.length === 0) {
+                    container.innerHTML = `
                     <p class="text-muted text-center small my-4">
                         <i class="bi bi-cart-x fs-3 d-block mb-2"></i>
                         Tu lista está vacía
                     </p>
                 `;
-                document.getElementById('listCountBadge').textContent = '0';
-                document.getElementById('listTotalUSD').textContent = '$0.00';
-                document.getElementById('listTotalBS').textContent = 'Bs 0.00';
-                document.getElementById('btnExportList').disabled = true;
-                return;
+                    updateListTotals(0, 0);
+                    return;
+                }
+
+                // Split items
+                const pending = shoppingList.filter(i => !i.checked);
+                const inCart = shoppingList.filter(i => i.checked);
+
+                let html = '';
+                let totalPending = 0;
+                let totalCart = 0;
+
+                // Render Pending
+                if (pending.length > 0) {
+                    html += `<h6 class="small fw-bold text-muted text-uppercase mb-2">Pendiente (${pending.length})</h6>`;
+                    html += pending.map(item => renderListItemHTML(item, false)).join('');
+                    totalPending = pending.reduce((sum, i) => sum + (i.precio * i.quantity), 0);
+                }
+
+                // Render In Cart
+                if (inCart.length > 0) {
+                    html += `<h6 class="small fw-bold text-success text-uppercase mt-4 mb-2">En Carrito (${inCart.length})</h6>`;
+                    html += inCart.map(item => renderListItemHTML(item, true)).join('');
+                    totalCart = inCart.reduce((sum, i) => sum + (i.precio * i.quantity), 0);
+                }
+
+                container.innerHTML = html;
+                updateListTotals(totalPending, totalCart);
             }
 
-            let total = 0;
-            container.innerHTML = shoppingList.map(item => {
+            function renderListItemHTML(item, isChecked) {
                 const subtotal = item.precio * item.quantity;
-                total += subtotal;
-
                 return `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <strong>${item.nombre}</strong>
-                            <small class="text-muted d-block">${item.mercado}</small>
-                            <small class="text-primary">$${item.precio.toFixed(2)} c/u</small>
-                        </div>
-                        <div class="item-quantity">
-                            <button class="qty-btn" onclick="decrementQuantity('${item.productId}')">
-                                <i class="bi bi-dash"></i>
-                            </button>
-                            <input type="number" value="${item.quantity}" min="1" 
-                                onchange="updateQuantity('${item.productId}', this.value)">
-                            <button class="qty-btn" onclick="incrementQuantity('${item.productId}')">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </div>
-                        <div class="item-price">$${subtotal.toFixed(2)}</div>
-                        <button class="btn-remove-item" onclick="removeFromShoppingList('${item.productId}')">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                <div class="list-item ${isChecked ? 'bg-light opacity-75' : ''}" style="${isChecked ? 'border-left: 4px solid var(--success);' : ''}">
+                    <div class="form-check d-flex align-items-center me-2">
+                        <input class="form-check-input fs-5" type="checkbox" 
+                            ${isChecked ? 'checked' : ''} 
+                            onchange="toggleItemCheck('${item.productId}')">
                     </div>
-                `;
-            }).join('');
-
-            document.getElementById('listCountBadge').textContent = shoppingList.length;
-            document.getElementById('listTotalUSD').textContent = `$${total.toFixed(2)}`;
-            document.getElementById('listTotalBS').textContent = `Bs ${(total * tasaBCV).toFixed(2)}`;
-            document.getElementById('btnExportList').disabled = false;
-        }
-
-        function saveShoppingList() {
-            if (currentUser) {
-                localStorage.setItem('shoppingList_' + currentUser.id, JSON.stringify(shoppingList));
+                    <div class="item-info">
+                        <strong class="${isChecked ? 'text-decoration-line-through text-muted' : ''}">${item.nombre}</strong>
+                        <div class="small text-muted">${item.mercado}</div>
+                        <div class="d-flex align-items-center mt-1 gap-2">
+                            <small class="text-primary fw-bold">$${item.precio.toFixed(2)}</small>
+                            <span class="text-muted" style="font-size: 0.8em;">x ${item.quantity}</span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">$${subtotal.toFixed(2)}</div>
+                        
+                        <div class="item-quantity mt-1 justify-content-end">
+                            <button class="qty-btn btn-sm py-0 px-1" onclick="decrementQuantity('${item.productId}')"><i class="bi bi-dash"></i></button>
+                            <span class="mx-1 small fw-bold">${item.quantity}</span>
+                            <button class="qty-btn btn-sm py-0 px-1" onclick="incrementQuantity('${item.productId}')"><i class="bi bi-plus"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn btn-link text-danger ms-2 p-0" onclick="removeFromShoppingList('${item.productId}')">
+                        <i class="bi bi-x-circle"></i>
+                    </button>
+                </div>
+            `;
             }
-        }
 
-        function loadShoppingList() {
-            if (currentUser) {
-                const stored = localStorage.getItem('shoppingList_' + currentUser.id);
-                shoppingList = stored ? JSON.parse(stored) : [];
-                renderShoppingList();
+            function updateListTotals(pending, cart) {
+                const total = pending + cart;
+                document.getElementById('listCountBadge').textContent = shoppingList.length;
+
+                // Main Display
+                document.getElementById('listTotalUSD').textContent = `$${total.toFixed(2)}`;
+                document.getElementById('listTotalBS').textContent = `Bs ${(total * tasaBCV).toFixed(2)}`;
+
+                // Budget Bar Interaction (Check vs Limit)
+                updateBudgetUI(total);
+
+                // Update Checkout Button state
+                const btnCheckout = document.getElementById('btnCheckout');
+                if (btnCheckout) {
+                    if (cart > 0) {
+                        btnCheckout.disabled = false;
+                        btnCheckout.innerHTML = `<i class="bi bi-bag-check-fill"></i> Pagar Carrito ($${cart.toFixed(2)})`;
+                        btnCheckout.classList.replace('btn-secondary', 'btn-success');
+                    } else {
+                        btnCheckout.disabled = true;
+                        btnCheckout.innerHTML = `<i class="bi bi-bag-check"></i> Nada en carrito`;
+                        btnCheckout.classList.replace('btn-success', 'btn-secondary');
+                    }
+                }
             }
-        }
 
-        function clearShoppingList() {
-            if (shoppingList.length === 0) return;
+            async function processCheckout() {
+                const inCart = shoppingList.filter(i => i.checked);
+                if (inCart.length === 0) return;
 
-            if (confirm(`¿Limpiar toda la lista de compra (${shoppingList.length} productos)?`)) {
-                // Guardar en historial antes de limpiar
-                saveToHistory();
-                shoppingList = [];
-                saveShoppingList();
-                renderShoppingList();
-                filterProducts();
-                showToast('Lista de compra limpiada', 'success');
+                const totalCart = inCart.reduce((sum, i) => sum + (i.precio * i.quantity), 0);
+
+                if (!await showConfirmModal("Finalizar Compra", `¿Finalizar compra de ${inCart.length} productos por $${totalCart.toFixed(2)}?\n\nEsto registrará un Gasto y limpiará estos ítems de la lista.`)) return;
+
+                // 1. Register Expense
+                try {
+                    await llamarBackend('saveFinance', {
+                        payload: {
+                            tipo: 'egreso',
+                            nombre: `Compra Mercado (${inCart.length} items)`,
+                            monto: totalCart,
+                            fecha: new Date().toISOString(),
+                            ownerId: currentUser.id,
+                            detalles: inCart.map(i => `${i.quantity}x ${i.nombre}`).join(', ')
+                        }
+                    });
+
+                    // 2. Remove Bought items
+                    shoppingList = shoppingList.filter(i => !i.checked);
+                    saveShoppingList();
+                    renderShoppingList();
+
+                    // 3. Refresh Finance Data
+                    cargarDatosIniciales();
+
+                    showToast("¡Compra registrada con éxito! 🛍️", 'success');
+                } catch (e) {
+                    console.error(e);
+                    showToast("Error al procesar compra: " + e.message, 'error');
+                }
             }
-        }
 
-        // ==================== FUNCIONALIDADES OPCIONALES ====================
+            function saveShoppingList() {
+                if (currentUser) {
+                    localStorage.setItem('shoppingList_' + currentUser.id, JSON.stringify(shoppingList));
+                }
+            }
 
-        // Exportar/Compartir lista
-        function exportShoppingList() {
-            if (shoppingList.length === 0) return;
+            function loadShoppingList() {
+                if (currentUser) {
+                    const stored = localStorage.getItem('shoppingList_' + currentUser.id);
+                    shoppingList = stored ? JSON.parse(stored) : [];
+                    renderShoppingList();
+                }
+            }
 
-            let total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+            async function clearShoppingList() {
+                if (shoppingList.length === 0) return;
 
-            let text = `🛒 LISTA DE COMPRA - MarketPlanner\n`;
-            text += `Fecha: ${new Date().toLocaleDateString()}\n`;
-            text += `\n`;
+                if (await showConfirmModal('Limpiar Lista', `¿Limpiar toda la lista de compra (${shoppingList.length} productos)?`)) {
+                    // Guardar en historial antes de limpiar
+                    saveToHistory();
+                    shoppingList = [];
+                    saveShoppingList();
+                    renderShoppingList();
+                    filterProducts();
+                    showToast('Lista de compra limpiada', 'success');
+                }
+            }
 
-            shoppingList.forEach(item => {
-                text += `• ${item.nombre} (${item.quantity}x) - $${(item.precio * item.quantity).toFixed(2)}\n`;
-                text += `  ${item.mercado}\n`;
-            });
+            // ==================== FUNCIONALIDADES OPCIONALES ====================
 
-            text += `\n💰 TOTAL: $${total.toFixed(2)} (Bs ${(total * tasaBCV).toFixed(2)})`;
+            // Exportar/Compartir lista
+            function exportShoppingList() {
+                if (shoppingList.length === 0) {
+                    showToast('La lista de compra está vacía', 'info');
+                    return;
+                }
 
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Mi Lista de Compra',
-                    text: text
-                }).then(() => {
-                    showToast('Lista compartida exitosamente', 'success');
-                }).catch(err => {
-                    console.log('Error sharing:', err);
-                    copyToClipboard(text);
+                let total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+
+                let text = `🛒 LISTA DE COMPRA - MarketPlanner\n`;
+                text += `Fecha: ${new Date().toLocaleDateString()}\n`;
+                text += `\n`;
+
+                shoppingList.forEach(item => {
+                    text += `• ${item.nombre} (${item.quantity}x) - $${(item.precio * item.quantity).toFixed(2)}\n`;
+                    text += `  ${item.mercado}\n`;
                 });
-            } else {
-                copyToClipboard(text);
-            }
-        }
 
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showToast('Lista copiada al portapapeles', 'success');
-        }
+                text += `\n💰 TOTAL: $${total.toFixed(2)} (Bs ${(total * tasaBCV).toFixed(2)})`;
 
-        // Historial de listas
-        function saveToHistory() {
-            if (shoppingList.length === 0) return;
-
-            const total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
-
-            listHistory.unshift({
-                id: Date.now(),
-                date: new Date().toISOString(),
-                items: [...shoppingList],
-                total: total,
-                count: shoppingList.length
-            });
-
-            // Mantener solo últimas 10 listas
-            if (listHistory.length > 10) {
-                listHistory = listHistory.slice(0, 10);
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Mi Lista de Compra',
+                        text: text
+                    }).then(() => {
+                        showToast('Lista compartida exitosamente', 'success');
+                    }).catch(err => {
+                        console.log('Error sharing:', err);
+                        copyToClipboard(text);
+                    });
+                } else {
+                    copyToClipboard(text);
+                }
             }
 
-            if (currentUser) {
-                localStorage.setItem('listHistory_' + currentUser.id, JSON.stringify(listHistory));
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Lista copiada al portapapeles', 'success');
             }
 
-            renderListHistory();
-        }
+            // Historial de listas
+            function saveToHistory() {
+                if (shoppingList.length === 0) return;
 
-        function loadListHistory() {
-            if (currentUser) {
-                const stored = localStorage.getItem('listHistory_' + currentUser.id);
-                listHistory = stored ? JSON.parse(stored) : [];
+                const total = shoppingList.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+
+                listHistory.unshift({
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    items: [...shoppingList],
+                    total: total,
+                    count: shoppingList.length
+                });
+
+                // Mantener solo últimas 10 listas
+                if (listHistory.length > 10) {
+                    listHistory = listHistory.slice(0, 10);
+                }
+
+                if (currentUser) {
+                    localStorage.setItem('listHistory_' + currentUser.id, JSON.stringify(listHistory));
+                }
+
                 renderListHistory();
             }
-        }
 
-        function renderListHistory() {
-            const container = document.getElementById('listHistory');
-            if (!container) return;
-
-            if (listHistory.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center my-2">Sin historial</p>';
-                return;
+            function loadListHistory() {
+                if (currentUser) {
+                    const stored = localStorage.getItem('listHistory_' + currentUser.id);
+                    listHistory = stored ? JSON.parse(stored) : [];
+                    renderListHistory();
+                }
             }
 
-            container.innerHTML = listHistory.map(list => {
-                const date = new Date(list.date).toLocaleDateString();
-                return `
+            function renderListHistory() {
+                const container = document.getElementById('listHistory');
+                if (!container) return;
+
+                if (listHistory.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center my-2">Sin historial</p>';
+                    return;
+                }
+
+                container.innerHTML = listHistory.map(list => {
+                    const date = new Date(list.date).toLocaleDateString();
+                    return `
                     <div class="history-item" onclick="loadHistoryList('${list.id}')">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -3403,70 +3037,115 @@
                         </div>
                     </div>
                 `;
-            }).join('');
-        }
-
-        function loadHistoryList(listId) {
-            const list = listHistory.find(l => l.id == listId);
-            if (!list) return;
-
-            if (confirm(`¿Cargar lista del ${new Date(list.date).toLocaleDateString()}?\n${list.count} productos - $${list.total.toFixed(2)}`)) {
-                shoppingList = [...list.items];
-                saveShoppingList();
-                renderShoppingList();
-                filterProducts();
-                showToast('Lista del historial cargada', 'success');
-            }
-        }
-
-        // Toast notifications
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `custom-toast ${type}`;
-            toast.innerHTML = `
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-
-            let container = document.querySelector('.toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.className = 'toast-container';
-                document.body.appendChild(container);
+                }).join('');
             }
 
-            container.appendChild(toast);
+            async function loadHistoryList(listId) {
+                const list = listHistory.find(l => l.id == listId);
+                if (!list) return;
 
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // ==================== INICIALIZATION ====================
-
-        // Extender cargarDatosIniciales para incluir calendario y productos
-        const originalCargarDatosIniciales = cargarDatosIniciales;
-        cargarDatosIniciales = async function () {
-            await originalCargarDatosIniciales();
-            if (currentUser) {
-                loadCalendarEvents();
-                loadProductsCatalog();
+                if (await showConfirmModal('Cargar Historial', `¿Cargar lista del ${new Date(list.date).toLocaleDateString()}?\n${list.count} productos - $${list.total.toFixed(2)}`)) {
+                    shoppingList = [...list.items];
+                    saveShoppingList();
+                    renderShoppingList();
+                    filterProducts();
+                    showToast('Lista del historial cargada', 'success');
+                }
             }
-        };
+
 
         // ==================== FIN NUEVAS FUNCIONALIDADES ====================
     </script>
     <script>
-        // --- SYNC DARK MODE ATTRIBUTE ---
-        function syncDarkMode() {
-            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
-        }
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncDarkMode);
-        syncDarkMode();
+            // --- UX HELPERS: Modals & Toasts ---
+
+            function showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `custom-toast ${type}`;
+
+                let icon = 'bi-info-circle';
+                if (type === 'success') icon = 'bi-check-circle-fill text-success';
+                if (type === 'error') icon = 'bi-exclamation-triangle-fill text-danger';
+                if (type === 'warning') icon = 'bi-exclamation-circle-fill text-warning';
+
+                toast.innerHTML = `
+                <i class="bi ${icon} fs-4"></i>
+                <div class="flex-grow-1 fw-medium">${message}</div>
+                <button class="btn-close small" onclick="this.parentElement.remove()"></button>
+            `;
+
+                container.appendChild(toast);
+
+                // Auto remove after 4s
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            function showInfoModal(title, message) {
+                return new Promise((resolve) => {
+                    const modalEl = document.getElementById('customGenericModal');
+                    const modal = new bootstrap.Modal(modalEl);
+
+                    document.getElementById('customModalTitle').textContent = title;
+                    document.getElementById('customModalBody').innerHTML = message; // Use innerHTML for potential HTML content
+                    document.getElementById('customModalFooter').innerHTML = `
+                    <button class="btn btn-primary w-100" data-bs-dismiss="modal">Entendido</button>
+                `;
+
+                    modalEl.addEventListener('hidden.bs.modal', () => {
+                        resolve();
+                    }, { once: true });
+
+                    modal.show();
+                });
+            }
+
+            function showConfirmModal(title, message, confirmText = 'Confirmar', cancelText = 'Cancelar', isDestructive = false) {
+                return new Promise((resolve) => {
+                    const modalEl = document.getElementById('customGenericModal');
+                    const modal = new bootstrap.Modal(modalEl);
+
+                    document.getElementById('customModalTitle').textContent = title;
+                    document.getElementById('customModalBody').innerHTML = message; // Use innerHTML for potential HTML content
+
+                    const btnClass = isDestructive ? 'btn-danger' : 'btn-primary';
+
+                    document.getElementById('customModalFooter').innerHTML = `
+                    <button class="btn btn-light flex-fill" data-bs-dismiss="modal">
+                        ${cancelText}
+                    </button>
+                    <button class="btn ${btnClass} flex-fill" id="btnConfirmAction">
+                        ${confirmText}
+                    </button>
+                `;
+
+                    let confirmed = false;
+
+                    const confirmBtn = document.getElementById('btnConfirmAction');
+                    confirmBtn.onclick = () => {
+                        confirmed = true;
+                        modal.hide();
+                    };
+
+                    modalEl.addEventListener('hidden.bs.modal', () => {
+                        resolve(confirmed);
+                    }, { once: true });
+
+                    modal.show();
+                });
+            }
+
+            // --- BACKEND SIMULADO (Google Apps Script) ---
+            function syncDarkMode() {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncDarkMode);
+            syncDarkMode();
     </script>
 </body>
 
