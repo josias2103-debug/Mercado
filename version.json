@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "build_number": 1,
+  "release_date": "2026-01-02",
+  "codename": "Foundation",
+  "changelog": [
+    "Initial version tracking established.",
+    "Roadmap defined: UX/UI -> Logic -> APK."
+  ]
+}
